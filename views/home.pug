@@ -1,0 +1,181 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Trang chủ
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-sm
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...')
+                            .profile_info
+                                span Xin chào
+                                if user
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc  
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)
+                                    
+                                                   
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                        span= user.employee_name 
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+
+                // footer content
+                //- footer
+                //-     .pull-right
+                //-         | Hệ thống quản lý văn bản
+                //-     .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')

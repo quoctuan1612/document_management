@@ -1,0 +1,446 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Quản lý công việc
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-md  
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...')
+                            .profile_info
+                                span Xin chào
+                                if user
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ        
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc    
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến           
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)                 
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+
+                // page content
+                #infoIncomingDocumentModal.modal.fade(tabindex='-1', aria-labelledby='infoIncomingDocumentModalLabel', role="dialog")
+                    .modal-dialog(role="document")
+                        .modal-content(style="width: 600px")
+                            .modal-header
+                                h5#infoIncomingDocumentModalLabel.modal-title Thông tin chi tiết văn bản đến
+                            .modal-body
+                                input#list-incoming-documents(value=incoming_documents, hidden="")
+                                form#demo-form2-info.form-horizontal.form-label-left
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Mã văn bản đến
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-id.form-control(type='text', style="width: 300px" disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Loại văn bản đến
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-type.form-control(type='text', style="width: 300px" disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Tên văn bản đến
+                                        .col-md-6.col-sm-6
+                                            textarea#info-incoming-document-name.form-control(style="width: 300px" disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Nơi phát hành
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-destination.form-control(type='text', style="width: 300px" disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Ngày đến
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-date.form-control(type='text', style="width: 300px" disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Nội dung
+                                        .col-md-6.col-sm-6
+                                            textarea#info-incoming-document-content.form-control(rows="4", style="width: 300px" disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Ý kiến chỉ đạo của BGH
+                                        .col-md-6.col-sm-6
+                                            textarea#info-opinion-manager.form-control(rows="4", style="width: 300px" disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Ý kiến chỉ đạo của Trưởng phòng
+                                        .col-md-6.col-sm-6
+                                            textarea#info-opinion-leader.form-control(rows="4", style="width: 300px" disabled)
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát                              
+                
+                #reportModal.modal.fade(tabindex='-1', aria-labelledby='reportModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#reportModalLabel.modal-title Báo cáo
+                            .modal-body
+                                form#demo-form2-report.form-horizontal.form-label-left(data-parsley-validate='', action="/tasks/newReport", method="POST")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Báo cáo
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            textarea#new-report.form-control(name="new_report", rows="4", style="width: 300px", required="") 
+                                            input#id-incoming-document(type="text", name="id", hidden)    
+                            .modal-footer
+                                button#submit-report.btn.btn-success(type='button', data-dismiss='modal') Lưu
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+
+                #isCompleteFromEmployeeModal.modal.fade(tabindex='-1', aria-labelledby='isCompleteFromEmployeeModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#isCompleteFromEmployeeModalLabel.modal-title Báo cáo
+                            .modal-body
+                                | Bạn có chắc chắn đã hoàn thành công việc xử lý văn bản đến này chưa?    
+                            .modal-footer
+                                button#submit-complete.btn.btn-success(type='button', data-dismiss='modal') Hoàn thành
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+
+                #commentModal.modal.fade(tabindex='-1', aria-labelledby='commentModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#commentModalLabel.modal-title Phản hồi
+                            .modal-body
+                                .item.form-group
+                                    label.col-form-label.col-md-3.col-sm-3.label-align
+                                        | Phản hồi của Trưởng phòng
+                                    .col-md-6.col-sm-6
+                                        textarea#comment-leader.form-control(rows="4", style="width: 300px" disabled)
+                                .item.form-group
+                                    label.col-form-label.col-md-3.col-sm-3.label-align
+                                        | Phản hồi của Lãnh đạo
+                                    .col-md-6.col-sm-6
+                                        textarea#comment-manager.form-control(rows="4", style="width: 300px" disabled)
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+
+                .right_col(role='main')
+                    .page-title
+                        .title_left
+                           h3 Quản lý công việc
+                        .title_right
+                            .col-md-5.col-sm-5.form-group.pull-right.top_search
+                                form(action="/documents-type", method="GET", class="submit")
+                                    .input-group
+                                        input#search-type-document.form-control(type='text', name="type_document", placeholder='Tìm kiếm...', value=query)
+                                        span.input-group-btn
+                                            button.btn.btn-default(type='submit') Tìm
+                    
+                    .clearfix 
+
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách văn bản được phân công xử lý
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content#list-task-document(style="display: none;")
+                                    table.table
+                                        tr 
+                                            th STT 
+                                            th Mã văn bản
+                                            th Văn bản xử lý
+                                            th Trạng thái
+                                        each value, index in assignment
+                                            if (value.employee_id == user.username && value.isCompleteFromEmployee == false)
+                                                tr
+                                                    td= index + 1
+                                                    td= value.incoming_document_id
+                                                    td
+                                                        a(href="/documents-incoming/" + value.incoming_document_id + "/download")= value.fileName
+                                                    if (value.isAcceptFromLeader == true)
+                                                        td Trưởng phòng đã duyệt 
+                                                    else 
+                                                        td Chưa duyệt
+                                                    td 
+                                                        button.btn.btn-info(data-toggle='modal', data-target='#infoIncomingDocumentModal', data-value=value) Chi tiết
+                                                    if (user_permission.access_assignment_manager !== "Yes")
+                                                        td  
+                                                            button.btn.btn-warning(data-toggle='modal', data-target='#reportModal', data-value=value.incoming_document_id) Báo cáo
+                                                    td  
+                                                        button.btn.btn-secondary(data-toggle='modal', data-target='#commentModal', data-value=value) Phản hồi
+                                                    td  
+                                                        button.btn.btn-success(data-toggle='modal', data-target='#isCompleteFromEmployeeModal', data-value=value.incoming_document_id) Hoàn thành
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách văn bản đã xử lý
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none;")
+                                    table.table 
+                                        tr 
+                                            th STT 
+                                            th Mã văn bản
+                                            th Tên văn bản 
+                                            th Tải xuống
+                                        each value, index in assignment
+                                            if (value.employee_id == user.username && value.isComplete == true)
+                                                tr
+                                                    td= index + 1
+                                                    td= value.incoming_document_id
+                                                    td= value.incoming_document_name
+                                                    td
+                                                        a(href="/documents-incoming/" + value.id + "/download")= value.fileName
+                                                    td 
+                                                        button.btn.btn-info(data-toggle='modal', data-target='#infoIncomingDocumentModal', data-value=value) Chi tiết
+                                                    td  
+                                                        button.btn.btn-secondary(data-toggle='modal', data-target='#commentModal', data-value=value) Phản hồi
+                                                    
+                                     
+                // page content
+                
+                // footer content
+                footer
+                    .pull-right
+                        | Hệ thống quản lý văn bản
+                    .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')
+        script. 
+            document.addEventListener('DOMContentLoaded', function (event) {
+                $("#infoIncomingDocumentModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+                    
+                    let value_incoming_document;
+                    let value_assignment = button.data('value');
+                    let value_incoming_document_id = value_assignment.incoming_document_id;
+                    let list_incoming_documents = document.getElementById("list-incoming-documents");
+                    let list = JSON.parse(list_incoming_documents.getAttribute("value"));
+
+                    value_incoming_document= list.find((value) => {
+                        return value.id == value_incoming_document_id;
+                    })
+                        
+
+                    let inputIncomingDocumentId = document.getElementById('info-incoming-document-id');
+                    let inputIncomingDocumentType = document.getElementById('info-incoming-document-type');
+                    let inputIncomingDocumentName = document.getElementById('info-incoming-document-name');
+                    let inputIncomingDocumentDestination = document.getElementById('info-incoming-document-destination');
+                    let inputIncomingDocumentDate = document.getElementById('info-incoming-document-date');
+                    let inputIncomingDocumentContent = document.getElementById('info-incoming-document-content');
+                    let inputOpinionManager = document.getElementById('info-opinion-manager');
+                    let inputOpinionLeader = document.getElementById('info-opinion-leader');
+
+                    inputIncomingDocumentId.setAttribute("value",value_incoming_document.id);
+                    inputIncomingDocumentType.setAttribute("value",value_incoming_document.incoming_document_type);
+                    inputIncomingDocumentName.value = value_incoming_document.incoming_document_name;
+                    inputIncomingDocumentDestination.setAttribute("value",value_incoming_document.incoming_document_destination);
+                    inputIncomingDocumentDate.setAttribute("value",value_incoming_document.incoming_document_date);
+                    inputIncomingDocumentContent.value = value_incoming_document.incoming_document_content;
+                    inputOpinionManager.value = value_assignment.opinion;
+                    inputOpinionLeader.value = value_assignment.opinionFromLeader;
+                });
+
+                $("#reportModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_incoming_document_id = button.data('value');
+                    document.getElementById("id-incoming-document").setAttribute("value",value_incoming_document_id);
+
+                    document.getElementById('submit-report').onclick = () => {
+                        document.getElementById('demo-form2-report').submit();
+                    };
+
+                });
+
+                $("#commentModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_assignment = button.data('value');
+                    let commentLeader = document.getElementById('comment-leader');
+                    let commentManager = document.getElementById('comment-manager');
+
+                    commentLeader.value = value_assignment.commentFromLeader;
+                    commentManager.value = value_assignment.commentFromManager;
+                });
+
+                $('textarea').each(function(){
+                    $(this).val($(this).val().trim());
+                });
+
+                let id_comlete;
+                let btnCompleteFromEmployee = document.getElementById('submit-complete');
+                $("#isCompleteFromEmployeeModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    id_comlete = button.data('value');
+                });
+
+                btnCompleteFromEmployee.onclick = function(){
+                    window.location = "/tasks/" + id_comlete + "/complete";
+                }
+            });

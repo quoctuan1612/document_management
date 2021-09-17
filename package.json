@@ -1,0 +1,27 @@
+{
+  "name": "hethongquanlyvanban",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mock-server": "json-server --watch --host 127.0.0.1 db.json"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "lowdb": "^1.0.0",
+    "multer": "^1.4.2",
+    "nodemailer": "^6.6.0",
+    "pug": "^3.0.2",
+    "short-id": "0.1.0-1"
+  },
+  "devDependencies": {
+    "json-server": "^0.16.3",
+    "nodemon": "^2.0.7"
+  }
+}

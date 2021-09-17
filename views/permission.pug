@@ -1,0 +1,2333 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Quản lý nhóm quyền
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-md  
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...')
+                            .profile_info
+                                span Xin chào
+                                if user
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ        
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến     
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)                           
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+
+                // page content
+                #updatePermissionModal.modal.fade(tabindex='-1', aria-labelledby='updatePermissionModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#updatePermissionModalLabel.modal-title Sửa thông tin nhóm quyền
+                            .modal-body
+                                form#demo-form2-update.form-horizontal.form-label-left(data-parsley-validate='', method="POST")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align(for='permission-id')
+                                            | Mã nhóm quyền
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-permission-id.form-control(type='text', required='', name='id')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align(for='permission-name')
+                                            | Tên nhóm quyền
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-permission-name.form-control(type='text', name='name', required='')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align(for='description')
+                                            | Mô tả
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            textarea#update-permission-description.form-control(name='description', required='')
+                                    table.table
+                                        thead
+                                            tr
+                                                th 
+                                                    .checkbox
+                                                        input#update-select_all(type='checkbox')
+                                                th.title Chức năng
+                                                th Truy cập
+                                                th Thêm mới
+                                                th Sửa
+                                                th Xóa
+                                        tbody
+                                            tr
+                                                td
+                                                td
+                                                    label.update-department(style="cursor: pointer;") Quản lý phòng ban
+                                                td
+                                                    .checkbox
+                                                        input#update-access_department(type='checkbox', value='Yes', name='update_access_department')
+                                                        input#update-access_department_hidden(type='hidden', value='No', name='update_access_department')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_department(type='checkbox', value='Yes', name='update_add_department')
+                                                        input#update-add_department_hidden(type='hidden', value='No', name='update_add_department')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_department(type='checkbox', value='Yes', name='update_update_department')
+                                                        input#update-update_department_hidden(type='hidden', value='No', name='update_update_department')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_department(type='checkbox', value='Yes', name='update_delete_department')
+                                                        input#update-delete_department_hidden(type='hidden', value='No', name='update_delete_department')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-position(style="cursor: pointer;") Quản lý chức vụ
+                                                td
+                                                    .checkbox
+                                                        input#update-access_position(type='checkbox', value='Yes', name='update_access_position')
+                                                        input#update-access_position_hidden(type='hidden', value='No', name='update_access_position')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_position(type='checkbox', value='Yes', name='update_add_position')
+                                                        input#update-add_position_hidden(type='hidden', value='No', name='update_add_position')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_position(type='checkbox', value='Yes', name='update_update_position')
+                                                        input#update-update_position_hidden(type='hidden', value='No', name='update_update_position')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_position(type='checkbox', value='Yes', name='update_delete_position')
+                                                        input#update-delete_position_hidden(type='hidden', value='No', name='update_delete_position')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-employee(style="cursor: pointer;") Quản lý nhân viên
+                                                td
+                                                    .checkbox
+                                                        input#update-access_employee(type='checkbox', value='Yes', name='update_access_employee')
+                                                        input#update-access_employee_hidden(type='hidden', value='No', name='update_access_employee')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_employee(type='checkbox', value='Yes', name='update_add_employee')
+                                                        input#update-add_employee_hidden(type='hidden', value='No', name='update_add_employee')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_employee(type='checkbox', value='Yes', name='update_update_employee')
+                                                        input#update-update_employee_hidden(type='hidden', value='No', name='update_update_employee')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_employee(type='checkbox', value='Yes', name='update_delete_employee')
+                                                        input#update-delete_employee_hidden(type='hidden', value='No', name='update_delete_employee')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-permission(style="cursor: pointer;") Quản lý nhóm quyền
+                                                td
+                                                    .checkbox
+                                                        input#update-access_permission(type='checkbox', value='Yes', name='update_access_permission')
+                                                        input#update-access_permission_hidden(type='hidden', value='No', name='update_access_permission')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_permission(type='checkbox', value='Yes', name='update_add_permission')
+                                                        input#update-add_permission_hidden(type='hidden', value='No', name='update_add_permission')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_permission(type='checkbox', value='Yes', name='update_update_permission')
+                                                        input#update-update_permission_hidden(type='hidden', value='No', name='update_update_permission')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_permission(type='checkbox', value='Yes', name='update_delete_permission')
+                                                        input#update-delete_permission_hidden(type='hidden', value='No', name='update_delete_permission')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-user(style="cursor: pointer;") Quản lý người dùng
+                                                td
+                                                    .checkbox
+                                                        input#update-access_user(type='checkbox', value='Yes', name='update_access_user')
+                                                        input#update-access_user_hidden(type='hidden', value='No', name='update_access_user')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_user(type='checkbox', value='Yes', name='update_add_user')
+                                                        input#update-add_user_hidden(type='hidden', value='No', name='update_add_user')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_user(type='checkbox', value='Yes', name='update_update_user')
+                                                        input#update-update_user_hidden(type='hidden', value='No', name='update_update_user')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_user(type='checkbox', value='Yes', name='update_delete_user')
+                                                        input#update-delete_user_hidden(type='hidden', value='No', name='update_delete_user')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-type-document(style="cursor: pointer;") Quản lý loại văn bản
+                                                td
+                                                    .checkbox
+                                                        input#update-access_type_document(type='checkbox', value='Yes', name='update_access_type_document')
+                                                        input#update-access_type_document_hidden(type='hidden', value='No', name='update_access_type_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_type_document(type='checkbox', value='Yes', name='update_add_type_document')
+                                                        input#update-add_type_document_hidden(type='hidden', value='No', name='update_add_type_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_type_document(type='checkbox', value='Yes', name='update_update_type_document')
+                                                        input#update-update_type_document_hidden(type='hidden', value='No', name='update_update_type_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_type_document(type='checkbox', value='Yes', name='update_delete_type_document')
+                                                        input#update-delete_type_document_hidden(type='hidden', value='No', name='update_delete_type_document')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-destination-document(style="cursor: pointer;") Quản lý nơi đến
+                                                td
+                                                    .checkbox
+                                                        input#update-access_destination_document(type='checkbox', value='Yes', name='update_access_destination_document')
+                                                        input#update-access_destination_document_hidden(type='hidden', value='No', name='update_access_destination_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_destination_document(type='checkbox', value='Yes', name='update_add_destination_document')
+                                                        input#update-add_destination_document_hidden(type='hidden', value='No', name='update_add_destination_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_destination_document(type='checkbox', value='Yes', name='update_update_destination_document')
+                                                        input#update-update_destination_document_hidden(type='hidden', value='No', name='update_update_destination_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_destination_document(type='checkbox', value='Yes', name='update_delete_destination_document')
+                                                        input#update-delete_destination_document_hidden(type='hidden', value='No', name='update_delete_destination_document')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-incoming-document(style="cursor: pointer;") Quản lý văn bản đến
+                                                td
+                                                    .checkbox
+                                                        input#update-access_incoming_document(type='checkbox', value='Yes', name='update_access_incoming_document')
+                                                        input#update-access_incoming_document_hidden(type='hidden', value='No', name='update_access_incoming_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_incoming_document(type='checkbox', value='Yes', name='update_add_incoming_document')
+                                                        input#update-add_incoming_document_hidden(type='hidden', value='No', name='update_add_incoming_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_incoming_document(type='checkbox', value='Yes', name='update_update_incoming_document')
+                                                        input#update-update_incoming_document_hidden(type='hidden', value='No', name='update_update_incoming_document')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_incoming_document(type='checkbox', value='Yes', name='update_delete_incoming_document')
+                                                        input#update-delete_incoming_document_hidden(type='hidden', value='No', name='update_delete_incoming_document')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-assignment-manager(style="cursor: pointer;") Xử lý văn bản đến (Lãnh đạo)
+                                                td
+                                                    .checkbox
+                                                        input#update-access_assignment_manager(type='checkbox', value='Yes', name='update_access_assignment_manager')
+                                                        input#update-access_assignment_manager_hidden(type='hidden', value='No', name='update_access_assignment_manager')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-assignment-leader(style="cursor: pointer;") Xử lý văn bản đến (Trưởng phòng)
+                                                td
+                                                    .checkbox
+                                                        input#update-access_assignment_leader(type='checkbox', value='Yes', name='update_access_assignment_leader')
+                                                        input#update-access_assignment_leader_hidden(type='hidden', value='No', name='update_access_assignment_leader')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-task(style="cursor: pointer;") Quản lý công việc
+                                                td
+                                                    .checkbox
+                                                        input#update-access_task(type='checkbox', value='Yes', name='update_access_task')
+                                                        input#update-access_task_hidden(type='hidden', value='No', name='update_access_task')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-document-processing-time(style="cursor: pointer;") Quản lý thời hạn xử lý văn bản đến
+                                                td
+                                                    .checkbox
+                                                        input#update-access_document_processing_time(type='checkbox', value='Yes', name='update_access_document_processing_time')
+                                                        input#update-access_document_processing_time_hidden(type='hidden', value='No', name='update_access_document_processing_time')
+                                                td
+                                                    .checkbox
+                                                        input#update-add_document_processing_time(type='checkbox', value='Yes', name='update_add_document_processing_time')
+                                                        input#update-add_document_processing_time_hidden(type='hidden', value='No', name='update_add_document_processing_time')
+                                                td
+                                                    .checkbox
+                                                        input#update-update_document_processing_time(type='checkbox', value='Yes', name='update_update_document_processing_time')
+                                                        input#update-update_document_processing_time_hidden(type='hidden', value='No', name='update_update_document_processing_time')
+                                                td
+                                                    .checkbox
+                                                        input#update-delete_document_processing_time(type='checkbox', value='Yes', name='update_delete_document_processing_time')
+                                                        input#update-delete_document_processing_time_hidden(type='hidden', value='No', name='update_delete_document_processing_time')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-document-slow-progress(style="cursor: pointer;") Theo dõi văn bản chậm tiến độ
+                                                td
+                                                    .checkbox
+                                                        input#update-access_document_slow_progress(type='checkbox', value='Yes', name='update_access_document_slow_progress')
+                                                        input#update-access_document_slow_progress_hidden(type='hidden', value='No', name='update_access_document_slow_progress')
+                                            tr
+                                                td
+                                                td
+                                                    label.update-statistics-manager(style="cursor: pointer;") Thống kê văn bản đến
+                                                td
+                                                    .checkbox
+                                                        input#update-access_statistics_manager(type='checkbox', value='Yes', name='update_access_statistics_manager')
+                                                        input#update-access_statistics_manager_hidden(type='hidden', value='No', name='update_access_statistics_manager')
+                                    .ln_solid
+                                    .item.form-group
+                                        .col-md-6.col-sm-6.offset-md-3
+                                            button#update-submit.btn.btn-success(type='submit') Lưu
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                
+                #deletePermissionModal.modal.fade(tabindex='-1', aria-labelledby='deletePermissionModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#deletePermissionModalLabel.modal-title Xóa thông tin nhóm quyền
+                            .modal-body
+                                | Bạn có chắc chắn muốn xóa nhóm quyền này không?
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                                button#btn-delete-permission.btn.btn-danger(type='button') Xóa
+                
+                #infoPermissionModal.modal.fade(tabindex='-1', aria-labelledby='infoPermissionModalLabel', role="dialog")
+                    .modal-dialog(role="document")
+                        .modal-content
+                            .modal-header
+                                h5#infoPermissionModalLabel.modal-title Thông tin chi tiết nhóm quyền
+                            .modal-body
+                                form#demo-form2.form-horizontal.form-label-left(data-parsley-validate='')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='permission-id')
+                                                | Mã nhóm quyền
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#info-permission-id.form-control(type='text' disabled)
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='permission-name')
+                                                | Tên nhóm quyền
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#info-permission-name.form-control(type='text' disabled)
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='description')
+                                                | Mô tả
+                                            .col-md-6.col-sm-6
+                                                textarea#info-permission-description.form-control(rows="4" disabled)
+                                        table.table
+                                            thead
+                                                tr
+                                                    th Chức năng
+                                                    th Truy cập
+                                                    th Thêm mới
+                                                    th Sửa
+                                                    th Xóa
+                                            tbody
+                                                tr
+                                                    td
+                                                        label Quản lý phòng ban
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_department(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_department(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_department(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_department(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý chức vụ
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_position(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_position(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_position(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_position(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý nhân viên
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_employee(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_employee(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_employee(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_employee(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý nhóm quyền
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_permission(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_permission(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_permission(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_permission(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý người dùng
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_user(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_user(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_user(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_user(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý loại văn bản
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_type_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_type_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_type_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_type_document(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý nơi đến
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_destination_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_destination_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_destination_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_destination_document(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý văn bản đến
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_incoming_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_incoming_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_incoming_document(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_incoming_document(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Xử lý văn bản đến (Lãnh đạo)
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_assignment_manager(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Xử lý văn bản đến (Trưởng phòng)
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_assignment_leader(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý công việc
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_task(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Quản lý thời hạn xử lý văn bản đến
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_document_processing_time(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-add_document_processing_time(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-update_document_processing_time(type='checkbox' disabled)
+                                                    td
+                                                        .checkbox
+                                                            input#info-delete_document_processing_time(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Theo dõi văn bản chậm tiến độ
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_document_slow_progress(type='checkbox' disabled)
+                                                tr
+                                                    td
+                                                        label Thống kê văn bản đến
+                                                    td
+                                                        .checkbox
+                                                            input#info-access_statistics_manager(type='checkbox' disabled)
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+
+                .right_col(role='main')
+                    .page-title
+                        .title_left
+                           h3 Quản lý nhóm quyền
+                        .title_right
+                            .col-md-5.col-sm-5.form-group.pull-right.top_search
+                                form(action="/permission", method="GET", class="submit")
+                                    .input-group
+                                        input.form-control(type='text', name="permission", placeholder='Tìm kiếm...', value=query)
+                                        span.input-group-btn
+                                            button.btn.btn-default(type='button') Tìm
+                    
+                    .clearfix 
+
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách nhóm quyền
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content
+                                    table.table 
+                                        colgroup 
+                                            col(width="auto")
+                                            col(width="auto")
+                                            col(width="auto")
+                                            col(width="350")
+                                            col(width="auto")
+                                            col(width="auto")
+                                            col(width="auto")
+                                        tr 
+                                            th STT 
+                                            th Mã nhóm quyền
+                                            th Tên nhóm quyền
+                                            th Mô tả
+                                        each value, index in permission
+                                            tr
+                                                td= index + 1
+                                                td= value.id
+                                                td= value.name
+                                                td= value.description
+                                                td 
+                                                    button.btn.btn-info(data-toggle='modal', data-target='#infoPermissionModal', data-value=value) Chi tiết
+                                                td  
+                                                    button.btn.btn-warning(data-toggle='modal', data-target='#updatePermissionModal', data-value=value) Sửa
+                                                td 
+                                                    button.btn.btn-danger(data-toggle='modal', data-target='#deletePermissionModal', data-id=value.id) Xóa 
+    
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Thêm mới nhóm quyền
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none;")
+                                    br
+                                    form#demo-form2.form-horizontal.form-label-left(data-parsley-validate='', action="/permission/new", method="POST")
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='permission-id')
+                                                | Mã nhóm quyền
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#permission-id.form-control(type='text', required='', name='id')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='permission-name')
+                                                | Tên nhóm quyền
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#permission-name.form-control(type='text', name='name', required='')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='description')
+                                                | Mô tả
+                                            .col-md-6.col-sm-6
+                                                input#description.form-control(type='text', name='description', required='')
+                                        table.table
+                                            thead
+                                                tr
+                                                    th 
+                                                        .checkbox
+                                                            input#select_all(type='checkbox')
+                                                    th.title Chức năng
+                                                    th Truy cập
+                                                    th Thêm mới
+                                                    th Sửa
+                                                    th Xóa
+                                            tbody
+                                                tr
+                                                    td
+                                                    td
+                                                        label.department(style="cursor: pointer;") Quản lý phòng ban
+                                                    td
+                                                        .checkbox
+                                                            input#access_department(type='checkbox', value='Yes', name='access_department')
+                                                            input#access_department_hidden(type='hidden', value='No', name='access_department')
+                                                    td
+                                                        .checkbox
+                                                            input#add_department(type='checkbox', value='Yes', name='add_department')
+                                                            input#add_department_hidden(type='hidden', value='No', name='add_department')
+                                                    td
+                                                        .checkbox
+                                                            input#update_department(type='checkbox', value='Yes', name='update_department')
+                                                            input#update_department_hidden(type='hidden', value='No', name='update_department')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_department(type='checkbox', value='Yes', name='delete_department')
+                                                            input#delete_department_hidden(type='hidden', value='No', name='delete_department')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.position(style="cursor: pointer;") Quản lý chức vụ
+                                                    td
+                                                        .checkbox
+                                                            input#access_position(type='checkbox', value='Yes', name='access_position')
+                                                            input#access_position_hidden(type='hidden', value='No', name='access_position')
+                                                    td
+                                                        .checkbox
+                                                            input#add_position(type='checkbox', value='Yes', name='add_position')
+                                                            input#add_position_hidden(type='hidden', value='No', name='add_position')
+                                                    td
+                                                        .checkbox
+                                                            input#update_position(type='checkbox', value='Yes', name='update_position')
+                                                            input#update_position_hidden(type='hidden', value='No', name='update_position')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_position(type='checkbox', value='Yes', name='delete_position')
+                                                            input#delete_position_hidden(type='hidden', value='No', name='delete_position')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.employee(style="cursor: pointer;") Quản lý nhân viên
+                                                    td
+                                                        .checkbox
+                                                            input#access_employee(type='checkbox', value='Yes', name='access_employee')
+                                                            input#access_employee_hidden(type='hidden', value='No', name='access_employee')
+                                                    td
+                                                        .checkbox
+                                                            input#add_employee(type='checkbox', value='Yes', name='add_employee')
+                                                            input#add_employee_hidden(type='hidden', value='No', name='add_employee')
+                                                    td
+                                                        .checkbox
+                                                            input#update_employee(type='checkbox', value='Yes', name='update_employee')
+                                                            input#update_employee_hidden(type='hidden', value='No', name='update_employee')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_employee(type='checkbox', value='Yes', name='delete_employee')
+                                                            input#delete_employee_hidden(type='hidden', value='No', name='delete_employee')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.permission(style="cursor: pointer;") Quản lý nhóm quyền
+                                                    td
+                                                        .checkbox
+                                                            input#access_permission(type='checkbox', value='Yes', name='access_permission')
+                                                            input#access_permission_hidden(type='hidden', value='No', name='access_permission')
+                                                    td
+                                                        .checkbox
+                                                            input#add_permission(type='checkbox', value='Yes', name='add_permission')
+                                                            input#add_permission_hidden(type='hidden', value='No', name='add_permission')
+                                                    td
+                                                        .checkbox
+                                                            input#update_permission(type='checkbox', value='Yes', name='update_permission')
+                                                            input#update_permission_hidden(type='hidden', value='No', name='update_permission')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_permission(type='checkbox', value='Yes', name='delete_permission')
+                                                            input#delete_permission_hidden(type='hidden', value='No', name='delete_permission')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.user(style="cursor: pointer;") Quản lý người dùng
+                                                    td
+                                                        .checkbox
+                                                            input#access_user(type='checkbox', value='Yes', name='access_user')
+                                                            input#access_user_hidden(type='hidden', value='No', name='access_user')
+                                                    td
+                                                        .checkbox
+                                                            input#add_user(type='checkbox', value='Yes', name='add_user')
+                                                            input#add_user_hidden(type='hidden', value='No', name='add_user')
+                                                    td
+                                                        .checkbox
+                                                            input#update_user(type='checkbox', value='Yes', name='update_user')
+                                                            input#update_user_hidden(type='hidden', value='No', name='update_user')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_user(type='checkbox', value='Yes', name='delete_user')
+                                                            input#delete_user_hidden(type='hidden', value='No', name='delete_user')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.type-document(style="cursor: pointer;") Quản lý loại văn bản
+                                                    td
+                                                        .checkbox
+                                                            input#access_type_document(type='checkbox', value='Yes', name='access_type_document')
+                                                            input#access_type_document_hidden(type='hidden', value='No', name='access_type_document')
+                                                    td
+                                                        .checkbox
+                                                            input#add_type_document(type='checkbox', value='Yes', name='add_type_document')
+                                                            input#add_type_document_hidden(type='hidden', value='No', name='add_type_document')
+                                                    td
+                                                        .checkbox
+                                                            input#update_type_document(type='checkbox', value='Yes', name='update_type_document')
+                                                            input#update_type_document_hidden(type='hidden', value='No', name='update_type_document')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_type_document(type='checkbox', value='Yes', name='delete_type_document')
+                                                            input#delete_type_document_hidden(type='hidden', value='No', name='delete_type_document')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.destination-document(style="cursor: pointer;") Quản lý nơi đến
+                                                    td
+                                                        .checkbox
+                                                            input#access_destination_document(type='checkbox', value='Yes', name='access_destination_document')
+                                                            input#access_destination_document_hidden(type='hidden', value='No', name='access_destination_document')
+                                                    td
+                                                        .checkbox
+                                                            input#add_destination_document(type='checkbox', value='Yes', name='add_destination_document')
+                                                            input#add_destination_document_hidden(type='hidden', value='No', name='add_destination_document')
+                                                    td
+                                                        .checkbox
+                                                            input#update_destination_document(type='checkbox', value='Yes', name='update_destination_document')
+                                                            input#update_destination_document_hidden(type='hidden', value='No', name='update_destination_document')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_destination_document(type='checkbox', value='Yes', name='delete_destination_document')
+                                                            input#delete_destination_document_hidden(type='hidden', value='No', name='delete_destination_document')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.incoming-document(style="cursor: pointer;") Quản lý văn bản đến
+                                                    td
+                                                        .checkbox
+                                                            input#access_incoming_document(type='checkbox', value='Yes', name='access_incoming_document')
+                                                            input#access_incoming_document_hidden(type='hidden', value='No', name='access_incoming_document')
+                                                    td
+                                                        .checkbox
+                                                            input#add_incoming_document(type='checkbox', value='Yes', name='add_incoming_document')
+                                                            input#add_incoming_document_hidden(type='hidden', value='No', name='add_incoming_document')
+                                                    td
+                                                        .checkbox
+                                                            input#update_incoming_document(type='checkbox', value='Yes', name='update_incoming_document')
+                                                            input#update_incoming_document_hidden(type='hidden', value='No', name='update_incoming_document')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_incoming_document(type='checkbox', value='Yes', name='delete_incoming_document')
+                                                            input#delete_incoming_document_hidden(type='hidden', value='No', name='delete_incoming_document')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.assignment-manager(style="cursor: pointer;") Xử lý văn bản đến (Lãnh đạo)
+                                                    td
+                                                        .checkbox
+                                                            input#access_assignment_manager(type='checkbox', value='Yes', name='access_assignment_manager')
+                                                            input#access_assignment_manager_hidden(type='hidden', value='No', name='access_assignment_manager')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.assignment-leader(style="cursor: pointer;") Xử lý văn bản đến (Trưởng phòng)
+                                                    td
+                                                        .checkbox
+                                                            input#access_assignment_leader(type='checkbox', value='Yes', name='access_assignment_leader')
+                                                            input#access_assignment_leader_hidden(type='hidden', value='No', name='access_assignment_leader')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.task(style="cursor: pointer;") Quản lý công việc
+                                                    td
+                                                        .checkbox
+                                                            input#access_task(type='checkbox', value='Yes', name='access_task')
+                                                            input#access_task_hidden(type='hidden', value='No', name='access_task')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.document-processing-time(style="cursor: pointer;") Quản lý thời hạn xử lý văn bản đến
+                                                    td
+                                                        .checkbox
+                                                            input#access_document_processing_time(type='checkbox', value='Yes', name='access_document_processing_time')
+                                                            input#access_document_processing_time_hidden(type='hidden', value='No', name='access_document_processing_time')
+                                                    td
+                                                        .checkbox
+                                                            input#add_document_processing_time(type='checkbox', value='Yes', name='add_document_processing_time')
+                                                            input#add_document_processing_time_hidden(type='hidden', value='No', name='add_document_processing_time')
+                                                    td
+                                                        .checkbox
+                                                            input#update_document_processing_time(type='checkbox', value='Yes', name='update_document_processing_time')
+                                                            input#update_document_processing_time_hidden(type='hidden', value='No', name='update_document_processing_time')
+                                                    td
+                                                        .checkbox
+                                                            input#delete_document_processing_time(type='checkbox', value='Yes', name='delete_document_processing_time')
+                                                            input#delete_document_processing_time_hidden(type='hidden', value='No', name='delete_document_processing_time')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.document-slow-progress(style="cursor: pointer;") Theo dõi văn bản chậm tiến độ
+                                                    td
+                                                        .checkbox
+                                                            input#access_document_slow_progress(type='checkbox', value='Yes', name='access_document_slow_progress')
+                                                            input#access_document_slow_progress_hidden(type='hidden', value='No', name='access_document_slow_progress')
+                                                tr
+                                                    td
+                                                    td
+                                                        label.statistics-manager(style="cursor: pointer;") Thống kê văn bản đến
+                                                    td
+                                                        .checkbox
+                                                            input#access_statistics_manager(type='checkbox', value='Yes', name='access_statistics_manager')
+                                                            input#access_statistics_manager_hidden(type='hidden', value='No', name='access_statistics_manager')
+                                        .ln_solid
+                                        .item.form-group
+                                            .col-md-6.col-sm-6.offset-md-3
+                                                button.btn.btn-primary(type='reset') Nhập lại
+                                                button#submit.btn.btn-success(type='submit') Lưu
+
+                // page content
+                
+                // footer content
+                footer
+                    .pull-right
+                        | Hệ thống quản lý văn bản
+                    .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')
+        script. 
+            document.addEventListener('DOMContentLoaded', function (event) {
+                let id;
+                let btnDeletePermission = document.getElementById('btn-delete-permission');
+
+                $("#infoPermissionModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_permission = button.data('value');
+
+                    let inputPermissionId = document.getElementById('info-permission-id');
+                    let inputPermissionName = document.getElementById('info-permission-name');
+                    let inputPermissionDescription = document.getElementById('info-permission-description');
+
+                    let access_department = document.getElementById("info-access_department");
+                    let add_department = document.getElementById("info-add_department");
+                    let update_department = document.getElementById("info-update_department");
+                    let delete_department = document.getElementById("info-delete_department");
+
+                    let access_position = document.getElementById("info-access_position");
+                    let add_position = document.getElementById("info-add_position");
+                    let update_position = document.getElementById("info-update_position");
+                    let delete_position = document.getElementById("info-delete_position");
+
+                    let access_employee = document.getElementById("info-access_employee");
+                    let add_employee = document.getElementById("info-add_employee");
+                    let update_employee = document.getElementById("info-update_employee");
+                    let delete_employee = document.getElementById("info-delete_employee");
+
+                    let access_permission = document.getElementById("info-access_permission");
+                    let add_permission = document.getElementById("info-add_permission");
+                    let update_permission = document.getElementById("info-update_permission");
+                    let delete_permission = document.getElementById("info-delete_permission");
+
+                    let access_user = document.getElementById("info-access_user");
+                    let add_user = document.getElementById("info-add_user");
+                    let update_user = document.getElementById("info-update_user");
+                    let delete_user = document.getElementById("info-delete_user");
+
+                    let access_type_document = document.getElementById("info-access_type_document");
+                    let add_type_document = document.getElementById("info-add_type_document");
+                    let update_type_document = document.getElementById("info-update_type_document");
+                    let delete_type_document = document.getElementById("info-delete_type_document");
+
+                    let access_destination_document = document.getElementById("info-access_destination_document");
+                    let add_destination_document = document.getElementById("info-add_destination_document");
+                    let update_destination_document = document.getElementById("info-update_destination_document");
+                    let delete_destination_document = document.getElementById("info-delete_destination_document");
+
+                    let access_incoming_document = document.getElementById("info-access_incoming_document");
+                    let add_incoming_document = document.getElementById("info-add_incoming_document");
+                    let update_incoming_document = document.getElementById("info-update_incoming_document");
+                    let delete_incoming_document = document.getElementById("info-delete_incoming_document");
+
+                    let access_assignment_manager = document.getElementById("info-access_assignment_manager");
+                    let access_assignment_leader = document.getElementById("info-access_assignment_leader");
+                    let access_task = document.getElementById("info-access_task");
+                    let access_document_slow_progress = document.getElementById("info-access_document_slow_progress");
+
+                    let access_document_processing_time = document.getElementById("info-access_document_processing_time");
+                    let add_document_processing_time = document.getElementById("info-add_document_processing_time");
+                    let update_document_processing_time = document.getElementById("info-update_document_processing_time");
+                    let delete_document_processing_time = document.getElementById("info-delete_document_processing_time");
+
+                    let access_statistics_manager = document.getElementById("info-access_statistics_manager");
+
+                    let checkBoxs = [access_department, add_department, update_department, delete_department,
+                                        access_position, add_position, update_position, delete_position,
+                                        access_employee, add_employee, update_employee, delete_employee,
+                                        access_permission, add_permission, update_permission, delete_permission,
+                                        access_user, add_user, update_user, delete_user,
+                                        access_type_document, add_type_document, update_type_document, delete_type_document,
+                                        access_destination_document, add_destination_document, update_destination_document, delete_destination_document,
+                                        access_incoming_document, add_incoming_document, update_incoming_document, delete_incoming_document,
+                                        access_assignment_manager, access_assignment_leader, access_task, access_document_slow_progress,
+                                        access_document_processing_time, add_document_processing_time, update_document_processing_time, delete_document_processing_time,
+                                        access_statistics_manager];
+
+                    let permission = [value_permission.access_department, value_permission.add_department, value_permission.update_department, value_permission.delete_department,
+                                        value_permission.access_position, value_permission.add_position, value_permission.update_position, value_permission.delete_position,
+                                        value_permission.access_employee, value_permission.add_employee, value_permission.update_employee, value_permission.delete_employee,
+                                        value_permission.access_permission, value_permission.add_permission, value_permission.update_permission, value_permission.delete_permission,
+                                        value_permission.access_user, value_permission.add_user, value_permission.update_user, value_permission.delete_user,
+                                        value_permission.access_type_document, value_permission.add_type_document, value_permission.update_type_document, value_permission.delete_type_document,
+                                        value_permission.access_destination_document, value_permission.add_destination_document, value_permission.update_destination_document, value_permission.delete_destination_document,
+                                        value_permission.access_incoming_document, value_permission.add_incoming_document, value_permission.update_incoming_document, value_permission.delete_incoming_document,
+                                        value_permission.access_assignment_manager, value_permission.access_assignment_leader, value_permission.access_task, value_permission.access_document_slow_progress,
+                                        value_permission.access_document_processing_time , value_permission.add_document_processing_time , value_permission.update_document_processing_time , value_permission.delete_document_processing_time,
+                                        value_permission.access_statistics_manager]
+
+                    for(let i=0; i< checkBoxs.length; i++){
+                        checkBoxs[i].checked = "";
+                    }
+
+                    for(let i=0; i< checkBoxs.length; i++){
+                        if (permission[i] == "Yes"){
+                            checkBoxs[i].checked = "checked";
+                        }
+                    }
+
+                    inputPermissionId.setAttribute("value",value_permission.id);
+                    inputPermissionName.setAttribute("value",value_permission.name);
+                    inputPermissionDescription.value = value_permission.description;
+                })
+
+                $("#updatePermissionModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_permission = button.data('value');
+
+                    let inputPermissionId = document.getElementById('update-permission-id');
+                    let inputPermissionName = document.getElementById('update-permission-name');
+                    let inputPermissionDescription = document.getElementById('update-permission-description');
+
+                    let access_department = document.getElementById("update-access_department");
+                    let add_department = document.getElementById("update-add_department");
+                    let update_department = document.getElementById("update-update_department");
+                    let delete_department = document.getElementById("update-delete_department");
+
+                    let access_position = document.getElementById("update-access_position");
+                    let add_position = document.getElementById("update-add_position");
+                    let update_position = document.getElementById("update-update_position");
+                    let delete_position = document.getElementById("update-delete_position");
+
+                    let access_employee = document.getElementById("update-access_employee");
+                    let add_employee = document.getElementById("update-add_employee");
+                    let update_employee = document.getElementById("update-update_employee");
+                    let delete_employee = document.getElementById("update-delete_employee");
+
+                    let access_permission = document.getElementById("update-access_permission");
+                    let add_permission = document.getElementById("update-add_permission");
+                    let update_permission = document.getElementById("update-update_permission");
+                    let delete_permission = document.getElementById("update-delete_permission");
+
+                    let access_user = document.getElementById("update-access_user");
+                    let add_user = document.getElementById("update-add_user");
+                    let update_user = document.getElementById("update-update_user");
+                    let delete_user = document.getElementById("update-delete_user");
+
+                    let access_type_document = document.getElementById("update-access_type_document");
+                    let add_type_document = document.getElementById("update-add_type_document");
+                    let update_type_document = document.getElementById("update-update_type_document");
+                    let delete_type_document = document.getElementById("update-delete_type_document");
+
+                    let access_destination_document = document.getElementById("update-access_destination_document");
+                    let add_destination_document = document.getElementById("update-add_destination_document");
+                    let update_destination_document = document.getElementById("update-update_destination_document");
+                    let delete_destination_document = document.getElementById("update-delete_destination_document");
+
+                    let access_incoming_document = document.getElementById("update-access_incoming_document");
+                    let add_incoming_document = document.getElementById("update-add_incoming_document");
+                    let update_incoming_document = document.getElementById("update-update_incoming_document");
+                    let delete_incoming_document = document.getElementById("update-delete_incoming_document");
+
+                    let access_assignment_manager = document.getElementById("update-access_assignment_manager");
+                    let access_assignment_leader = document.getElementById("update-access_assignment_leader");
+                    let access_task = document.getElementById("update-access_task");
+                    let access_document_slow_progress = document.getElementById("update-access_document_slow_progress");
+
+                    let access_document_processing_time = document.getElementById("update-access_document_processing_time");
+                    let add_document_processing_time = document.getElementById("update-add_document_processing_time");
+                    let update_document_processing_time = document.getElementById("update-update_document_processing_time");
+                    let delete_document_processing_time = document.getElementById("update-delete_document_processing_time");
+
+                    let access_statistics_manager = document.getElementById("update-access_statistics_manager");
+
+                    let checkBoxs = [access_department, add_department, update_department, delete_department,
+                                        access_position, add_position, update_position, delete_position,
+                                        access_employee, add_employee, update_employee, delete_employee,
+                                        access_permission, add_permission, update_permission, delete_permission,
+                                        access_user, add_user, update_user, delete_user,
+                                        access_type_document, add_type_document, update_type_document, delete_type_document,
+                                        access_destination_document, add_destination_document, update_destination_document, delete_destination_document,
+                                        access_incoming_document, add_incoming_document, update_incoming_document, delete_incoming_document,
+                                        access_assignment_manager, access_assignment_leader, access_task, access_document_slow_progress,
+                                        access_document_processing_time, add_document_processing_time, update_document_processing_time, delete_document_processing_time,
+                                        access_statistics_manager];
+
+                    let permission = [value_permission.access_department, value_permission.add_department, value_permission.update_department, value_permission.delete_department,
+                                        value_permission.access_position, value_permission.add_position, value_permission.update_position, value_permission.delete_position,
+                                        value_permission.access_employee, value_permission.add_employee, value_permission.update_employee, value_permission.delete_employee,
+                                        value_permission.access_permission, value_permission.add_permission, value_permission.update_permission, value_permission.delete_permission,
+                                        value_permission.access_user, value_permission.add_user, value_permission.update_user, value_permission.delete_user,
+                                        value_permission.access_type_document, value_permission.add_type_document, value_permission.update_type_document, value_permission.delete_type_document,
+                                        value_permission.access_destination_document, value_permission.add_destination_document, value_permission.update_destination_document, value_permission.delete_destination_document,
+                                        value_permission.access_incoming_document, value_permission.add_incoming_document, value_permission.update_incoming_document, value_permission.delete_incoming_document,
+                                        value_permission.access_assignment_manager, value_permission.access_assignment_leader, value_permission.access_task, value_permission.access_document_slow_progress,
+                                        value_permission.access_document_processing_time, value_permission.add_document_processing_time, value_permission.update_document_processing_time, value_permission.delete_document_processing_time,
+                                        value_permission.access_statistics_manager]
+
+                    for(let i=0; i< checkBoxs.length; i++){
+                        checkBoxs[i].checked = "";
+                    }
+
+                    for(let i=0; i< checkBoxs.length; i++){
+                        if (permission[i] == "Yes"){
+                            checkBoxs[i].checked = "checked";
+                        }
+                    }
+
+                    inputPermissionId.setAttribute("value",value_permission.id);
+                    inputPermissionName.setAttribute("value",value_permission.name);
+                    inputPermissionDescription.value = value_permission.description;
+
+                    let formUpdate = document.getElementById('demo-form2-update');
+                    let action = "/permission/" + value_permission.id + "/update";
+                    formUpdate.setAttribute("action",action);
+                });
+
+                $("#deletePermissionModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+                    id = button.data('id');
+                });
+
+                btnDeletePermission.onclick = function(){
+                    window.location = "/permission/" + id + "/delete";
+                };
+
+                let selectAllPermission = document.getElementById('select_all');
+                selectAllPermission.onclick =  function(e){
+
+                    let checkBox_access_department = document.getElementById("access_department");
+                    let checkBox_add_department = document.getElementById("add_department");
+                    let checkBox_update_department = document.getElementById("update_department");
+                    let checkBox_delete_department = document.getElementById("delete_department");
+                    
+                    let checkBox_access_position = document.getElementById("access_position");
+                    let checkBox_add_position = document.getElementById("add_position");
+                    let checkBox_update_position = document.getElementById("update_position");
+                    let checkBox_delete_position = document.getElementById("delete_position");
+
+                    let checkBox_access_employee = document.getElementById("access_employee");
+                    let checkBox_add_employee = document.getElementById("add_employee");
+                    let checkBox_update_employee = document.getElementById("update_employee");
+                    let checkBox_delete_employee = document.getElementById("delete_employee");
+
+                    let checkBox_access_permission = document.getElementById("access_permission");
+                    let checkBox_add_permission = document.getElementById("add_permission");
+                    let checkBox_update_permission = document.getElementById("update_permission");
+                    let checkBox_delete_permission = document.getElementById("delete_permission");
+
+                    let checkBox_access_user = document.getElementById("access_user");
+                    let checkBox_add_user = document.getElementById("add_user");
+                    let checkBox_update_user = document.getElementById("update_user");
+                    let checkBox_delete_user = document.getElementById("delete_user");
+
+                    let checkBox_access_type_document = document.getElementById("access_type_document");
+                    let checkBox_add_type_document = document.getElementById("add_type_document");
+                    let checkBox_update_type_document = document.getElementById("update_type_document");
+                    let checkBox_delete_type_document = document.getElementById("delete_type_document");
+
+                    let checkBox_access_destination_document = document.getElementById("access_destination_document");
+                    let checkBox_add_destination_document = document.getElementById("add_destination_document");
+                    let checkBox_update_destination_document = document.getElementById("update_destination_document");
+                    let checkBox_delete_destination_document = document.getElementById("delete_destination_document");
+
+                    let checkBox_access_incoming_document = document.getElementById("access_incoming_document");
+                    let checkBox_add_incoming_document = document.getElementById("add_incoming_document");
+                    let checkBox_update_incoming_document = document.getElementById("update_incoming_document");
+                    let checkBox_delete_incoming_document = document.getElementById("delete_incoming_document");
+
+                    let checkBox_access_assignment_manager = document.getElementById("access_assignment_manager");
+                    let checkBox_access_assignment_leader = document.getElementById("access_assignment_leader");
+                    let checkBox_access_task = document.getElementById("access_task");
+                    let checkBox_access_document_slow_progress = document.getElementById("access_document_slow_progress");
+
+                    let checkBox_access_document_processing_time = document.getElementById("access_document_processing_time");
+                    let checkBox_add_document_processing_time = document.getElementById("add_document_processing_time");
+                    let checkBox_update_document_processing_time = document.getElementById("update_document_processing_time");
+                    let checkBox_delete_document_processing_time = document.getElementById("delete_document_processing_time");
+
+                    let checkBox_access_statistics_manager = document.getElementById("access_statistics_manager");
+
+                    let checkBoxs = [
+                        checkBox_access_department, checkBox_add_department, checkBox_update_department, checkBox_delete_department,
+                        checkBox_access_position, checkBox_add_position, checkBox_update_position, checkBox_delete_position,
+                        checkBox_access_employee, checkBox_add_employee, checkBox_update_employee, checkBox_delete_employee,
+                        checkBox_access_permission, checkBox_add_permission, checkBox_update_permission, checkBox_delete_permission,
+                        checkBox_access_user, checkBox_add_user, checkBox_update_user, checkBox_delete_user,
+                        checkBox_access_type_document, checkBox_add_type_document, checkBox_update_type_document, checkBox_delete_type_document,
+                        checkBox_access_destination_document, checkBox_add_destination_document, checkBox_update_destination_document, checkBox_delete_destination_document,
+                        checkBox_access_incoming_document, checkBox_add_incoming_document, checkBox_update_incoming_document, checkBox_delete_incoming_document,
+                        checkBox_access_assignment_manager, checkBox_access_assignment_leader, checkBox_access_task, checkBox_access_document_slow_progress,
+                        checkBox_access_document_processing_time, checkBox_add_document_processing_time, checkBox_update_document_processing_time, checkBox_delete_document_processing_time,
+                        checkBox_access_statistics_manager];
+
+                    if (selectAllPermission.checked){
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                        });
+                    } else {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                        });
+                    }
+                }
+
+                const labelDepartment = document.querySelector('.department');
+                let checkedDepartment = false;
+                labelDepartment.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_department");
+                    let checkBox_add = document.getElementById("add_department");
+                    let checkBox_update = document.getElementById("update_department");
+                    let checkBox_delete = document.getElementById("delete_department");
+                    
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+                    if(!checkedDepartment)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                        });
+                        checkedDepartment = true;
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                        });
+                        checkedDepartment = false;
+                    }
+                })
+
+                const labelPosition = document.querySelector('.position');
+                let checkedPosition = false;
+                labelPosition.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_position");
+                    let checkBox_add = document.getElementById("add_position");
+                    let checkBox_update = document.getElementById("update_position");
+                    let checkBox_delete = document.getElementById("delete_position");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedPosition)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedPosition = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedPosition = false;
+                        });
+                    }
+                })
+
+                const labelEmployee = document.querySelector('.employee');
+                let checkedEmployee = false;
+                labelEmployee.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_employee");
+                    let checkBox_add = document.getElementById("add_employee");
+                    let checkBox_update = document.getElementById("update_employee");
+                    let checkBox_delete = document.getElementById("delete_employee");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedEmployee)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedEmployee = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedEmployee = false;
+                        });
+                    }
+                })
+
+                const labelPermission = document.querySelector('.permission');
+                let checkedPermission = false;
+                labelPermission.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_permission");
+                    let checkBox_add = document.getElementById("add_permission");
+                    let checkBox_update = document.getElementById("update_permission");
+                    let checkBox_delete = document.getElementById("delete_permission");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedPermission)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedPermission = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedPermission = false;
+                        });
+                    }
+                })
+
+                const labelUser = document.querySelector('.user');
+                let checkedUser = false;
+                labelUser.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_user");
+                    let checkBox_add = document.getElementById("add_user");
+                    let checkBox_update = document.getElementById("update_user");
+                    let checkBox_delete = document.getElementById("delete_user");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUser)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUser = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUser = false;
+                        });
+                    }
+                })
+
+                const labelTypeDocument = document.querySelector('.type-document');
+                let checkedTypeDocument = false;
+                labelTypeDocument.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_type_document");
+                    let checkBox_add = document.getElementById("add_type_document");
+                    let checkBox_update = document.getElementById("update_type_document");
+                    let checkBox_delete = document.getElementById("delete_type_document");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedTypeDocument)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedTypeDocument = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedTypeDocument = false;
+                        });
+                    }
+                })
+
+                const labelDestinationDocument = document.querySelector('.destination-document');
+                let checkedDestinationDocument = false;
+                labelDestinationDocument.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_destination_document");
+                    let checkBox_add = document.getElementById("add_destination_document");
+                    let checkBox_update = document.getElementById("update_destination_document");
+                    let checkBox_delete = document.getElementById("delete_destination_document");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedDestinationDocument)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedDestinationDocument = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedDestinationDocument = false;
+                        });
+                    }
+                })
+
+                const labelIncomingDocument = document.querySelector('.incoming-document');
+                let checkedIncomingDocument = false;
+                labelIncomingDocument.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_incoming_document");
+                    let checkBox_add = document.getElementById("add_incoming_document");
+                    let checkBox_update = document.getElementById("update_incoming_document");
+                    let checkBox_delete = document.getElementById("delete_incoming_document");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedIncomingDocument)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedIncomingDocument = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedIncomingDocument = false;
+                        });
+                    }
+                })
+
+                const labelDocumentProcessingTime = document.querySelector('.document-processing-time');
+                let checkedDocumentProcessingTime = false;
+                labelDocumentProcessingTime.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_document_processing_time");
+                    let checkBox_add = document.getElementById("add_document_processing_time");
+                    let checkBox_update = document.getElementById("update_document_processing_time");
+                    let checkBox_delete = document.getElementById("delete_document_processing_time");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedDocumentProcessingTime)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedDocumentProcessingTime = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedDocumentProcessingTime = false;
+                        });
+                    }
+                })
+
+                const labelAssignmentManager = document.querySelector('.assignment-manager');
+                let checkedAssignmentManager = false;
+                labelAssignmentManager.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_assignment_manager");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedAssignmentManager)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedAssignmentManager = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedAssignmentManager = false;
+                        });
+                    }
+                })
+
+                const labelAssignmentLeader = document.querySelector('.assignment-leader');
+                let checkedAssignmentLeader = false;
+                labelAssignmentLeader.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_assignment_leader");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedAssignmentLeader)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedAssignmentLeader = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedAssignmentLeader = false;
+                        });
+                    }
+                })
+
+                const labelTask = document.querySelector('.task');
+                let checkedTask = false;
+                labelTask.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_task");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedTask)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedTask = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedTask = false;
+                        });
+                    }
+                })
+
+                const labelDocumentSlowProgress = document.querySelector('.document-slow-progress');
+                let checkedDocumentSlowProgress = false;
+                labelDocumentSlowProgress.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_document_slow_progress");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedDocumentSlowProgress)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedDocumentSlowProgress = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedDocumentSlowProgress = false;
+                        });
+                    }
+                })
+
+                const labelStatisticsManager = document.querySelector('.statistics-manager');
+                let checkedStatisticsManager = false;
+                labelStatisticsManager.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("access_statistics_manager");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedStatisticsManager)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedStatisticsManager = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedStatisticsManager = false;
+                        });
+                    }
+                })
+
+                document.getElementById("update-submit").onclick = function (e) {
+                    let access_department = document.getElementById("update-access_department");
+                    let add_department = document.getElementById("update-add_department");
+                    let update_department = document.getElementById("update-update_department");
+                    let delete_department = document.getElementById("update-delete_department");
+
+                    let access_position = document.getElementById("update-access_position");
+                    let add_position = document.getElementById("update-add_position");
+                    let update_position = document.getElementById("update-update_position");
+                    let delete_position = document.getElementById("update-delete_position");
+
+                    let access_employee = document.getElementById("update-access_employee");
+                    let add_employee = document.getElementById("update-add_employee");
+                    let update_employee = document.getElementById("update-update_employee");
+                    let delete_employee = document.getElementById("update-delete_employee");
+
+                    let access_permission = document.getElementById("update-access_permission");
+                    let add_permission = document.getElementById("update-add_permission");
+                    let update_permission = document.getElementById("update-update_permission");
+                    let delete_permission = document.getElementById("update-delete_permission");
+
+                    let access_user = document.getElementById("update-access_user");
+                    let add_user = document.getElementById("update-add_user");
+                    let update_user = document.getElementById("update-update_user");
+                    let delete_user = document.getElementById("update-delete_user");
+
+                    let access_type_document = document.getElementById("update-access_type_document");
+                    let add_type_document = document.getElementById("update-add_type_document");
+                    let update_type_document = document.getElementById("update-update_type_document");
+                    let delete_type_document = document.getElementById("update-delete_type_document");
+
+                    let access_destination_document = document.getElementById("update-access_destination_document");
+                    let add_destination_document = document.getElementById("update-add_destination_document");
+                    let update_destination_document = document.getElementById("update-update_destination_document");
+                    let delete_destination_document = document.getElementById("update-delete_destination_document");
+
+                    let access_incoming_document = document.getElementById("update-access_incoming_document");
+                    let add_incoming_document = document.getElementById("update-add_incoming_document");
+                    let update_incoming_document = document.getElementById("update-update_incoming_document");
+                    let delete_incoming_document = document.getElementById("update-delete_incoming_document");
+
+                    let access_assignment_manager = document.getElementById("update-access_assignment_manager");
+                    let access_assignment_leader = document.getElementById("update-access_assignment_leader");
+                    let access_task = document.getElementById("update-access_task");
+                    let access_document_slow_progress = document.getElementById("update-access_document_slow_progress");
+
+                    let access_document_processing_time = document.getElementById("update-access_document_processing_time");
+                    let add_document_processing_time = document.getElementById("update-add_document_processing_time");
+                    let update_document_processing_time = document.getElementById("update-update_document_processing_time");
+                    let delete_document_processing_time = document.getElementById("update-delete_document_processing_time");
+
+                    let access_statistics_manager = document.getElementById("update-access_statistics_manager");
+
+                    let checkBoxs_Yes = [access_department, add_department, update_department, delete_department,
+                                         access_position, add_position, update_position, delete_position,
+                                         access_employee, add_employee, update_employee, delete_employee,
+                                         access_permission, add_permission, update_permission, delete_permission,
+                                         access_user, add_user, update_user, delete_user,
+                                         access_type_document, add_type_document, update_type_document, delete_type_document,
+                                         access_destination_document, add_destination_document, update_destination_document, delete_destination_document,
+                                         access_incoming_document, add_incoming_document, update_incoming_document, delete_incoming_document,
+                                         access_assignment_manager, access_assignment_leader, access_task, access_document_slow_progress,
+                                         access_document_processing_time, add_document_processing_time, update_document_processing_time, delete_document_processing_time,
+                                         access_statistics_manager];
+                    
+                    let access_department_hidden = document.getElementById("update-access_department_hidden");
+                    let add_department_hidden = document.getElementById("update-add_department_hidden");
+                    let update_department_hidden = document.getElementById("update-update_department_hidden");
+                    let delete_department_hidden = document.getElementById("update-delete_department_hidden");
+
+                    let access_position_hidden = document.getElementById("update-access_position_hidden");
+                    let add_position_hidden = document.getElementById("update-add_position_hidden");
+                    let update_position_hidden = document.getElementById("update-update_position_hidden");
+                    let delete_position_hidden = document.getElementById("update-delete_position_hidden");
+
+                    let access_employee_hidden = document.getElementById("update-access_employee_hidden");
+                    let add_employee_hidden = document.getElementById("update-add_employee_hidden");
+                    let update_employee_hidden = document.getElementById("update-update_employee_hidden");
+                    let delete_employee_hidden = document.getElementById("update-delete_employee_hidden");
+
+                    let access_permission_hidden = document.getElementById("update-access_permission_hidden");
+                    let add_permission_hidden = document.getElementById("update-add_permission_hidden");
+                    let update_permission_hidden = document.getElementById("update-update_permission_hidden");
+                    let delete_permission_hidden = document.getElementById("update-delete_permission_hidden");
+
+                    let access_user_hidden = document.getElementById("update-access_user_hidden");
+                    let add_user_hidden = document.getElementById("update-add_user_hidden");
+                    let update_user_hidden = document.getElementById("update-update_user_hidden");
+                    let delete_user_hidden = document.getElementById("update-delete_user_hidden");
+
+                    let access_type_document_hidden = document.getElementById("update-access_type_document_hidden");
+                    let add_type_document_hidden = document.getElementById("update-add_type_document_hidden");
+                    let update_type_document_hidden = document.getElementById("update-update_type_document_hidden");
+                    let delete_type_document_hidden = document.getElementById("update-delete_type_document_hidden");
+
+                    let access_destination_document_hidden = document.getElementById("update-access_destination_document_hidden");
+                    let add_destination_document_hidden = document.getElementById("update-add_destination_document_hidden");
+                    let update_destination_document_hidden = document.getElementById("update-update_destination_document_hidden");
+                    let delete_destination_document_hidden = document.getElementById("update-delete_destination_document_hidden");
+
+                    let access_incoming_document_hidden = document.getElementById("update-access_incoming_document_hidden");
+                    let add_incoming_document_hidden = document.getElementById("update-add_incoming_document_hidden");
+                    let update_incoming_document_hidden = document.getElementById("update-update_incoming_document_hidden");
+                    let delete_incoming_document_hidden = document.getElementById("update-delete_incoming_document_hidden");
+
+                    let access_assignment_manager_hidden = document.getElementById("update-access_assignment_manager_hidden");
+                    let access_assignment_leader_hidden = document.getElementById("update-access_assignment_leader_hidden");
+                    let access_task_hidden = document.getElementById("update-access_task_hidden");
+                    let access_document_slow_progress_hidden = document.getElementById("update-access_document_slow_progress_hidden");
+
+                    let access_document_processing_time_hidden = document.getElementById("update-access_document_processing_time_hidden");
+                    let add_document_processing_time_hidden = document.getElementById("update-add_document_processing_time_hidden");
+                    let update_document_processing_time_hidden = document.getElementById("update-update_document_processing_time_hidden");
+                    let delete_document_processing_time_hidden = document.getElementById("update-delete_document_processing_time_hidden");
+
+                    let access_statistics_manager_hidden = document.getElementById("update-access_statistics_manager_hidden");
+
+                    let checkBoxs_No = [access_department_hidden, add_department_hidden, update_department_hidden, delete_department_hidden,
+                                         access_position_hidden, add_position_hidden, update_position_hidden, delete_position_hidden,
+                                         access_employee_hidden, add_employee_hidden, update_employee_hidden, delete_employee_hidden,
+                                         access_permission_hidden, add_permission_hidden, update_permission_hidden, delete_permission_hidden,
+                                         access_user_hidden, add_user_hidden, update_user_hidden, delete_user_hidden,
+                                         access_type_document_hidden, add_type_document_hidden, update_type_document_hidden, delete_type_document_hidden,
+                                         access_destination_document_hidden, add_destination_document_hidden, update_destination_document_hidden, delete_destination_document_hidden,
+                                         access_incoming_document_hidden, add_incoming_document_hidden, update_incoming_document_hidden, delete_incoming_document_hidden,
+                                         access_assignment_manager_hidden, access_assignment_leader_hidden, access_task_hidden, access_document_slow_progress_hidden,
+                                         access_document_processing_time_hidden, add_document_processing_time_hidden, update_document_processing_time_hidden, delete_document_processing_time_hidden,
+                                         access_statistics_manager_hidden];
+
+                    checkBoxs_Yes.forEach((value, index) => {
+                        if(value.checked) {
+                            checkBoxs_No[index].disabled = true;
+                        }
+                    })
+                }
+        
+                document.getElementById("submit").onclick = function (e) {
+                    let access_department = document.getElementById("access_department");
+                    let add_department = document.getElementById("add_department");
+                    let update_department = document.getElementById("update_department");
+                    let delete_department = document.getElementById("delete_department");
+
+                    let access_position = document.getElementById("access_position");
+                    let add_position = document.getElementById("add_position");
+                    let update_position = document.getElementById("update_position");
+                    let delete_position = document.getElementById("delete_position");
+
+                    let access_employee = document.getElementById("access_employee");
+                    let add_employee = document.getElementById("add_employee");
+                    let update_employee = document.getElementById("update_employee");
+                    let delete_employee = document.getElementById("delete_employee");
+
+                    let access_permission = document.getElementById("access_permission");
+                    let add_permission = document.getElementById("add_permission");
+                    let update_permission = document.getElementById("update_permission");
+                    let delete_permission = document.getElementById("delete_permission");
+
+                    let access_user = document.getElementById("access_user");
+                    let add_user = document.getElementById("add_user");
+                    let update_user = document.getElementById("update_user");
+                    let delete_user = document.getElementById("delete_user");
+
+                    let access_type_document = document.getElementById("access_type_document");
+                    let add_type_document = document.getElementById("add_type_document");
+                    let update_type_document = document.getElementById("update_type_document");
+                    let delete_type_document = document.getElementById("delete_type_document");
+
+                    let access_destination_document = document.getElementById("access_destination_document");
+                    let add_destination_document = document.getElementById("add_destination_document");
+                    let update_destination_document = document.getElementById("update_destination_document");
+                    let delete_destination_document = document.getElementById("delete_destination_document");
+
+                    let access_incoming_document = document.getElementById("access_incoming_document");
+                    let add_incoming_document = document.getElementById("add_incoming_document");
+                    let update_incoming_document = document.getElementById("update_incoming_document");
+                    let delete_incoming_document = document.getElementById("delete_incoming_document");
+
+                    let access_assignment_manager = document.getElementById("access_assignment_manager");
+                    let access_assignment_leader = document.getElementById("access_assignment_leader");
+                    let access_task = document.getElementById("access_task");
+                    let access_document_slow_progress = document.getElementById("access_document_slow_progress");
+
+                    let access_document_processing_time = document.getElementById("access_document_processing_time");
+                    let add_document_processing_time = document.getElementById("add_document_processing_time");
+                    let update_document_processing_time = document.getElementById("update_document_processing_time");
+                    let delete_document_processing_time = document.getElementById("delete_document_processing_time");
+
+                    let access_statistics_manager = document.getElementById("access_statistics_manager");
+
+                    let checkBoxs_Yes = [access_department, add_department, update_department, delete_department,
+                                         access_position, add_position, update_position, delete_position,
+                                         access_employee, add_employee, update_employee, delete_employee,
+                                         access_permission, add_permission, update_permission, delete_permission,
+                                         access_user, add_user, update_user, delete_user,
+                                         access_type_document, add_type_document, update_type_document, delete_type_document,
+                                         access_destination_document, add_destination_document, update_destination_document, delete_destination_document,
+                                         access_incoming_document, add_incoming_document, update_incoming_document, delete_incoming_document,
+                                         access_assignment_manager, access_assignment_leader, access_task, access_document_slow_progress,
+                                         access_document_processing_time, add_document_processing_time, update_document_processing_time, delete_document_processing_time,
+                                         access_statistics_manager];
+                    
+                    let access_department_hidden = document.getElementById("access_department_hidden");
+                    let add_department_hidden = document.getElementById("add_department_hidden");
+                    let update_department_hidden = document.getElementById("update_department_hidden");
+                    let delete_department_hidden = document.getElementById("delete_department_hidden");
+
+                    let access_position_hidden = document.getElementById("access_position_hidden");
+                    let add_position_hidden = document.getElementById("add_position_hidden");
+                    let update_position_hidden = document.getElementById("update_position_hidden");
+                    let delete_position_hidden = document.getElementById("delete_position_hidden");
+
+                    let access_employee_hidden = document.getElementById("access_employee_hidden");
+                    let add_employee_hidden = document.getElementById("add_employee_hidden");
+                    let update_employee_hidden = document.getElementById("update_employee_hidden");
+                    let delete_employee_hidden = document.getElementById("delete_employee_hidden");
+
+                    let access_permission_hidden = document.getElementById("access_permission_hidden");
+                    let add_permission_hidden = document.getElementById("add_permission_hidden");
+                    let update_permission_hidden = document.getElementById("update_permission_hidden");
+                    let delete_permission_hidden = document.getElementById("delete_permission_hidden");
+
+                    let access_user_hidden = document.getElementById("access_user_hidden");
+                    let add_user_hidden = document.getElementById("add_user_hidden");
+                    let update_user_hidden = document.getElementById("update_user_hidden");
+                    let delete_user_hidden = document.getElementById("delete_user_hidden");
+
+                    let access_type_document_hidden = document.getElementById("access_type_document_hidden");
+                    let add_type_document_hidden = document.getElementById("add_type_document_hidden");
+                    let update_type_document_hidden = document.getElementById("update_type_document_hidden");
+                    let delete_type_document_hidden = document.getElementById("delete_type_document_hidden");
+
+                    let access_destination_document_hidden = document.getElementById("access_destination_document_hidden");
+                    let add_destination_document_hidden = document.getElementById("add_destination_document_hidden");
+                    let update_destination_document_hidden = document.getElementById("update_destination_document_hidden");
+                    let delete_destination_document_hidden = document.getElementById("delete_destination_document_hidden");
+
+                    let access_incoming_document_hidden = document.getElementById("access_incoming_document_hidden");
+                    let add_incoming_document_hidden = document.getElementById("add_incoming_document_hidden");
+                    let update_incoming_document_hidden = document.getElementById("update_incoming_document_hidden");
+                    let delete_incoming_document_hidden = document.getElementById("delete_incoming_document_hidden");
+
+                    let access_assignment_manager_hidden = document.getElementById("access_assignment_manager_hidden");
+                    let access_assignment_leader_hidden = document.getElementById("access_assignment_leader_hidden");
+                    let access_task_hidden = document.getElementById("access_task_hidden");
+                    let access_document_slow_progress_hidden = document.getElementById("access_document_slow_progress_hidden");
+
+                    let access_document_processing_time_hidden = document.getElementById("access_document_processing_time_hidden");
+                    let add_document_processing_time_hidden = document.getElementById("add_document_processing_time_hidden");
+                    let update_document_processing_time_hidden = document.getElementById("update_document_processing_time_hidden");
+                    let delete_document_processing_time_hidden = document.getElementById("delete_document_processing_time_hidden");
+
+                    let access_statistics_manager_hidden = document.getElementById("access_statistics_manager_hidden");
+
+                    let checkBoxs_No = [access_department_hidden, add_department_hidden, update_department_hidden, delete_department_hidden,
+                                         access_position_hidden, add_position_hidden, update_position_hidden, delete_position_hidden,
+                                         access_employee_hidden, add_employee_hidden, update_employee_hidden, delete_employee_hidden,
+                                         access_permission_hidden, add_permission_hidden, update_permission_hidden, delete_permission_hidden,
+                                         access_user_hidden, add_user_hidden, update_user_hidden, delete_user_hidden,
+                                         access_type_document_hidden, add_type_document_hidden, update_type_document_hidden, delete_type_document_hidden,
+                                         access_destination_document_hidden, add_destination_document_hidden, update_destination_document_hidden, delete_destination_document_hidden,
+                                         access_incoming_document_hidden, add_incoming_document_hidden, update_incoming_document_hidden, delete_incoming_document_hidden,
+                                         access_assignment_manager_hidden, access_assignment_leader_hidden, access_task_hidden, access_document_slow_progress_hidden,
+                                         access_document_processing_time_hidden, add_document_processing_time_hidden, update_document_processing_time_hidden, delete_document_processing_time_hidden,
+                                         access_statistics_manager_hidden];
+
+                    checkBoxs_Yes.forEach((value, index) => {
+                        if(value.checked) {
+                            checkBoxs_No[index].disabled = true;
+                        }
+                    })
+                }     
+
+                let updateSelectAllPermission = document.getElementById('update-select_all');
+                updateSelectAllPermission.onclick =  function(e){
+
+                    let checkBox_access_department = document.getElementById("update-access_department");
+                    let checkBox_add_department = document.getElementById("update-add_department");
+                    let checkBox_update_department = document.getElementById("update-update_department");
+                    let checkBox_delete_department = document.getElementById("update-delete_department");
+                    
+                    let checkBox_access_position = document.getElementById("update-access_position");
+                    let checkBox_add_position = document.getElementById("update-add_position");
+                    let checkBox_update_position = document.getElementById("update-update_position");
+                    let checkBox_delete_position = document.getElementById("update-delete_position");
+
+                    let checkBox_access_employee = document.getElementById("update-access_employee");
+                    let checkBox_add_employee = document.getElementById("update-add_employee");
+                    let checkBox_update_employee = document.getElementById("update-update_employee");
+                    let checkBox_delete_employee = document.getElementById("update-delete_employee");
+
+                    let checkBox_access_permission = document.getElementById("update-access_permission");
+                    let checkBox_add_permission = document.getElementById("update-add_permission");
+                    let checkBox_update_permission = document.getElementById("update-update_permission");
+                    let checkBox_delete_permission = document.getElementById("update-delete_permission");
+
+                    let checkBox_access_user = document.getElementById("update-access_user");
+                    let checkBox_add_user = document.getElementById("update-add_user");
+                    let checkBox_update_user = document.getElementById("update-update_user");
+                    let checkBox_delete_user = document.getElementById("update-delete_user");
+
+                    let checkBox_access_type_document = document.getElementById("update-access_type_document");
+                    let checkBox_add_type_document = document.getElementById("update-add_type_document");
+                    let checkBox_update_type_document = document.getElementById("update-update_type_document");
+                    let checkBox_delete_type_document = document.getElementById("update-delete_type_document");
+
+                    let checkBox_access_destination_document = document.getElementById("update-access_destination_document");
+                    let checkBox_add_destination_document = document.getElementById("update-add_destination_document");
+                    let checkBox_update_destination_document = document.getElementById("update-update_destination_document");
+                    let checkBox_delete_destination_document = document.getElementById("update-delete_destination_document");
+
+                    let checkBox_access_incoming_document = document.getElementById("update-access_incoming_document");
+                    let checkBox_add_incoming_document = document.getElementById("update-add_incoming_document");
+                    let checkBox_update_incoming_document = document.getElementById("update-update_incoming_document");
+                    let checkBox_delete_incoming_document = document.getElementById("update-delete_incoming_document");
+
+                    let checkBox_access_assignment_manager = document.getElementById("update-access_assignment_manager");
+                    let checkBox_access_assignment_leader = document.getElementById("update-access_assignment_leader");
+                    let checkBox_access_task = document.getElementById("update-access_task");
+                    let checkBox_access_document_slow_progress = document.getElementById("update-access_document_slow_progress");
+
+                    let checkBox_access_document_processing_time = document.getElementById("update-access_document_processing_time");
+                    let checkBox_add_document_processing_time = document.getElementById("update-add_document_processing_time");
+                    let checkBox_update_document_processing_time = document.getElementById("update-update_document_processing_time");
+                    let checkBox_delete_document_processing_time = document.getElementById("update-delete_document_processing_time");
+
+                    let checkBox_access_statistics_manager = document.getElementById("update-access_statistics_manager");
+
+                    let checkBoxs = [
+                        checkBox_access_department, checkBox_add_department, checkBox_update_department, checkBox_delete_department,
+                        checkBox_access_position, checkBox_add_position, checkBox_update_position, checkBox_delete_position,
+                        checkBox_access_employee, checkBox_add_employee, checkBox_update_employee, checkBox_delete_employee,
+                        checkBox_access_permission, checkBox_add_permission, checkBox_update_permission, checkBox_delete_permission,
+                        checkBox_access_user, checkBox_add_user, checkBox_update_user, checkBox_delete_user,
+                        checkBox_access_type_document, checkBox_add_type_document, checkBox_update_type_document, checkBox_delete_type_document,
+                        checkBox_access_destination_document, checkBox_add_destination_document, checkBox_update_destination_document, checkBox_delete_destination_document,
+                        checkBox_access_incoming_document, checkBox_add_incoming_document, checkBox_update_incoming_document, checkBox_delete_incoming_document,
+                        checkBox_access_assignment_manager, checkBox_access_assignment_leader, checkBox_access_task, checkBox_access_document_slow_progress,
+                        checkBox_access_document_processing_time, checkBox_add_document_processing_time, checkBox_update_document_processing_time, checkBox_delete_document_processing_time,
+                        checkBox_access_statistics_manager];
+
+                    if (updateSelectAllPermission.checked){
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                        });
+                    } else {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                        });
+                    }
+                }
+
+                const labelUpdateDepartment = document.querySelector('.update-department');
+                let checkedUpdateDepartment = false;
+                labelUpdateDepartment.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_department");
+                    let checkBox_add = document.getElementById("update-add_department");
+                    let checkBox_update = document.getElementById("update-update_department");
+                    let checkBox_delete = document.getElementById("update-delete_department");
+                    
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+                    if(!checkedUpdateDepartment)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                        });
+                        checkedUpdateDepartment = true;
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                        });
+                        checkedUpdateDepartment = false;
+                    }
+                })
+
+                const labelUpdatePosition = document.querySelector('.update-position');
+                let checkedUpdatePosition = false;
+                labelUpdatePosition.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_position");
+                    let checkBox_add = document.getElementById("update-add_position");
+                    let checkBox_update = document.getElementById("update-update_position");
+                    let checkBox_delete = document.getElementById("update-delete_position");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdatePosition)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdatePosition = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdatePosition = false;
+                        });
+                    }
+                })
+
+                const labelUpdateEmployee = document.querySelector('.update-employee');
+                let checkedUpdateEmployee = false;
+                labelUpdateEmployee.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_employee");
+                    let checkBox_add = document.getElementById("update-add_employee");
+                    let checkBox_update = document.getElementById("update-update_employee");
+                    let checkBox_delete = document.getElementById("update-delete_employee");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdateEmployee)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateEmployee = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateEmployee = false;
+                        });
+                    }
+                })
+
+                const labelUpdatePermission = document.querySelector('.update-permission');
+                let checkedUpdatePermission = false;
+                labelUpdatePermission.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_permission");
+                    let checkBox_add = document.getElementById("update-add_permission");
+                    let checkBox_update = document.getElementById("update-update_permission");
+                    let checkBox_delete = document.getElementById("update-delete_permission");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdatePermission)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdatePermission = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdatePermission = false;
+                        });
+                    }
+                })
+
+                const labelUpdateUser = document.querySelector('.update-user');
+                let checkedUpdateUser = false;
+                labelUpdateUser.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_user");
+                    let checkBox_add = document.getElementById("update-add_user");
+                    let checkBox_update = document.getElementById("update-update_user");
+                    let checkBox_delete = document.getElementById("update-delete_user");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdateUser)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateUser = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateUser = false;
+                        });
+                    }
+                })     
+
+                const labelUpdateTypeDocument = document.querySelector('.update-type-document');
+                let checkedUpdateTypeDocument = false;
+                labelUpdateTypeDocument.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_type_document");
+                    let checkBox_add = document.getElementById("update-add_type_document");
+                    let checkBox_update = document.getElementById("update-update_type_document");
+                    let checkBox_delete = document.getElementById("update-delete_type_document");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdateTypeDocument)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateTypeDocument = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateTypeDocument = false;
+                        });
+                    }
+                }) 
+
+                const labelUpdateDestinationDocument = document.querySelector('.update-destination-document');
+                let checkedUpdateDestinationDocument = false;
+                labelUpdateDestinationDocument.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_destination_document");
+                    let checkBox_add = document.getElementById("update-add_destination_document");
+                    let checkBox_update = document.getElementById("update-update_destination_document");
+                    let checkBox_delete = document.getElementById("update-delete_destination_document");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdateDestinationDocument)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateDestinationDocument = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateDestinationDocument = false;
+                        });
+                    }
+                }) 
+
+                const labelUpdateIncomingDocument = document.querySelector('.update-incoming-document');
+                let checkedUpdateIncomingDocument = false;
+                labelUpdateIncomingDocument.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_incoming_document");
+                    let checkBox_add = document.getElementById("update-add_incoming_document");
+                    let checkBox_update = document.getElementById("update-update_incoming_document");
+                    let checkBox_delete = document.getElementById("update-delete_incoming_document");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdateIncomingDocument)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateIncomingDocument = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateIncomingDocument = false;
+                        });
+                    }
+                })
+
+                const labelUpdateAssignmentManager = document.querySelector('.update-assignment-manager');
+                let checkedUpdateAssignmentManager = false;
+                labelUpdateAssignmentManager.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_assignment_manager");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedUpdateAssignmentManager)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateAssignmentManager = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateAssignmentManager = false;
+                        });
+                    }
+                })
+                
+                const labelUpdateAssignmentLeader = document.querySelector('.update-assignment-leader');
+                let checkedUpdateAssignmentLeader = false;
+                labelUpdateAssignmentLeader.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_assignment_leader");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedUpdateAssignmentLeader)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateAssignmentLeader = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateAssignmentLeader = false;
+                        });
+                    }
+                })
+
+                const labelUpdateTask = document.querySelector('.update-task');
+                let checkedUpdateTask = false;
+                labelUpdateTask.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_task");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedUpdateTask)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateTask = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateTask = false;
+                        });
+                    }
+                })  
+
+                const labelUpdateDocumentProcessingTime = document.querySelector('.update-document-processing-time');
+                let checkedUpdateDocumentProcessingTime = false;
+                labelUpdateDocumentProcessingTime.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_document_processing_time");
+                    let checkBox_add = document.getElementById("update-add_document_processing_time");
+                    let checkBox_update = document.getElementById("update-update_document_processing_time");
+                    let checkBox_delete = document.getElementById("update-delete_document_processing_time");
+                    let checkBoxs = [checkBox_access, checkBox_add, checkBox_update, checkBox_delete];
+
+                    if(!checkedUpdateDocumentProcessingTime)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateDocumentProcessingTime = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateDocumentProcessingTime = false;
+                        });
+                    }
+                })
+
+                const labelUpdateDocumentSlowProgress = document.querySelector('.update-document-slow-progress');
+                let checkedUpdateDocumentSlowProgress = false;
+                labelUpdateDocumentSlowProgress.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_document_slow_progress");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedUpdateDocumentSlowProgress)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateDocumentSlowProgress = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateDocumentSlowProgress = false;
+                        });
+                    }
+                })
+
+                const labelUpdateStatisticsManager = document.querySelector('.update-statistics-manager');
+                let checkedUpdateStatisticsManager = false;
+                labelUpdateStatisticsManager.addEventListener('click', function(e){
+                    e.preventDefault();
+
+                    let checkBox_access = document.getElementById("update-access_statistics_manager");
+                    let checkBoxs = [checkBox_access];
+
+                    if(!checkedUpdateStatisticsManager)
+                    {
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = 'checked';
+                            checkedUpdateStatisticsManager = true;
+                        });
+                    }
+                    else{
+                        checkBoxs.forEach((checkBox, i) => {
+                            checkBox.checked = '';
+                            checkedUpdateStatisticsManager = false;
+                        });
+                    }
+                })
+            })
+

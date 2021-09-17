@@ -1,0 +1,348 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Quản lý loại văn bản
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-md  
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...')
+                            .profile_info
+                                span Xin chào
+                                if user
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ        
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc   
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến    
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)                          
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+
+                // page content
+                #updateTypeDocumentModal.modal.fade(tabindex='-1', aria-labelledby='updateTypeDocumentModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#updateTypeDocumentModalLabel.modal-title Sửa thông tin loại văn bản
+                            .modal-body
+                                form#demo-form2-update.form-horizontal.form-label-left(data-parsley-validate='', method="POST")
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Mã loại văn bản
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#update-type-document-id.form-control(type='text' disabled)
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Tên loại văn bản
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#update-type-document-name.form-control(type='text', name='name', required='required')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='description')
+                                                | Mô tả
+                                            .col-md-6.col-sm-6
+                                                textarea#update-description.form-control(name='description')
+                                        .ln_solid
+                                        .item.form-group
+                                            .col-md-6.col-sm-6.offset-md-3
+                                                button.btn.btn-success(type='submit') Lưu
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                
+                #deleteTypeDocumentModal.modal.fade(tabindex='-1', aria-labelledby='deleteTypeDocumentModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#deleteTypeDocumentModalLabel.modal-title Xóa thông tin loại văn bản
+                            .modal-body
+                                | Bạn có chắc chắn muốn xóa loại văn bản này không?
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                                button#btn-delete-type-document.btn.btn-danger(type='button') Xóa
+                
+
+                .right_col(role='main')
+                    .page-title
+                        .title_left
+                           h3 Quản lý loại văn bản
+                        .title_right
+                            .col-md-5.col-sm-5.form-group.pull-right.top_search
+                                form(action="/documents-type", method="GET", class="submit")
+                                    .input-group
+                                        input#search-type-document.form-control(type='text', name="type_document", placeholder='Tìm kiếm...', value=query)
+                                        span.input-group-btn
+                                            button.btn.btn-default(type='submit') Tìm
+                    
+                    .clearfix 
+
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách loại văn bản
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content#list-type-document(style="display: none;")
+                                    table.table 
+                                        colgroup 
+                                            col(width="auto")
+                                            col(width="auto")
+                                            col(width="auto")
+                                            col(width="350")
+                                        tr 
+                                            th STT 
+                                            th Mã loại văn bản
+                                            th Tên loại văn bản
+                                            th Mô tả
+                                        each value, index in type_documents
+                                            tr
+                                                td= index + 1
+                                                td= value.id
+                                                td= value.name
+                                                td= value.description
+                                                td  
+                                                    button.btn.btn-warning(data-toggle='modal', data-target='#updateTypeDocumentModal', data-value=value) Sửa
+                                                td 
+                                                    button.btn.btn-danger(data-toggle='modal', data-target='#deleteTypeDocumentModal', data-id=value.id) Xóa 
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Thêm mới loại văn bản
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none;")
+                                    br
+                                    form#demo-form2.form-horizontal.form-label-left(data-parsley-validate='', action="/documents-type/new", method="POST")
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='type-document-id')
+                                                | Mã loại văn bản
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#type-document-id.form-control(type='text', required='required', name='id')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='type-document-name')
+                                                | Tên loại văn bản
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#type-document-name.form-control(type='text', name='name', required='required')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='description')
+                                                | Mô tả
+                                            .col-md-6.col-sm-6
+                                                textarea#description.form-control(name='description')
+                                        .ln_solid
+                                        .item.form-group
+                                            .col-md-6.col-sm-6.offset-md-3
+                                                button.btn.btn-primary(type='reset') Nhập lại
+                                                button.btn.btn-success(type='submit') Lưu
+                // page content
+                
+                // footer content
+                footer
+                    .pull-right
+                        | Hệ thống quản lý văn bản
+                    .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')
+        script. 
+            document.addEventListener('DOMContentLoaded', function (event) {
+                let id;
+                let btnDeleteTypeDocument = document.getElementById('btn-delete-type-document');
+
+                $("#updateTypeDocumentModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_typeDocument = button.data('value');
+                    let inputTypeDocumentId = document.getElementById('update-type-document-id');
+                    let inputTypeDocumentName = document.getElementById('update-type-document-name');
+                    let inputTypeDocumentDesceiption = document.getElementById('update-description');
+                    
+                    let formUpdate = document.getElementById('demo-form2-update');
+                    let action = "/documents-type/" + value_typeDocument.id + "/update";
+
+                    inputTypeDocumentId.setAttribute("value",value_typeDocument.id);
+                    inputTypeDocumentName.setAttribute("value",value_typeDocument.name);
+                    inputTypeDocumentDesceiption.value = value_typeDocument.description;
+                    formUpdate.setAttribute("action",action);
+                });
+
+                $("#deleteTypeDocumentModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+                    id = button.data('id');
+                });
+
+                btnDeleteTypeDocument.onclick = function(){
+                    window.location = "/documents-type/" + id + "/delete";
+                }
+
+                if ($("#search-type-document").val()){
+                    document.getElementById("list-type-document").setAttribute("style","display: block")
+                }
+            });

@@ -1,0 +1,410 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Thống kê
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-sm
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...')
+                            .profile_info
+                                span Xin chào
+                                if user
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ        
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc 
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến     
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)                          
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                        span= user.employee_name 
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+                #infoDocumentModal.modal.fade(tabindex='-1', aria-labelledby='infoDocumentModalLabel', role="dialog")
+                    .modal-dialog(role="document")
+                        .modal-content
+                            .modal-header
+                                h5#infoDocumentModalLabel.modal-title Thông tin chi tiết văn bản đến
+                            .modal-body
+                                form#demo-form2-info.form-horizontal.form-label-left
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Mã văn bản đến
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-id.form-control(type='text' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Loại văn bản đến
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-type.form-control(type='text' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Tên văn bản đến
+                                        .col-md-6.col-sm-6
+                                            textarea#info-incoming-document-name.form-control(disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Nơi phát hành
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-destination.form-control(type='text' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            |  Ngày đến
+                                        .col-md-6.col-sm-6
+                                            input#info-incoming-document-date.form-control(type='text' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Nội dung
+                                        .col-md-6.col-sm-6
+                                            textarea#info-incoming-document-content.form-control(rows="4" disabled)
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+
+                .right_col(role='main')
+                    .page-title
+                        .title_left
+                            h3 Thống kê văn bản đến
+                        .title_right
+                            .row.form-group.top_search
+                                form(action="/statistics-leader", method="GET", class="submit")
+                                    .input-group
+                                        input#start-date.form-control(type='date', name="start", value=query_start)   
+                                        input#end-date.form-control(type='date', name="end", value=query_end)
+                                        select.form-control(name="document_type")
+                                            option
+                                            optgroup(label="Loại văn bản")
+                                                if (query.document_type)
+                                                    option(selected="selected")= query.document_type
+                                                each value in document_type
+                                                    if (query.document_type != value.name)
+                                                        option= value.name
+                                        select.form-control(name="status")
+                                            option
+                                            optgroup(label="Trạng thái")
+                                                if (query.status)
+                                                    option(selected="selected")= query.status 
+                                                - let status = ["Đã xử lý", "Đang xử lý"]
+                                                each value in status
+                                                    if (query.status != value)
+                                                        option= value
+                                        input.form-control(type="text", name="department", value=user.employee_department hidden)
+                                        span.input-group-btn
+                                            button.btn.btn-default(type='submit') Lọc
+                    
+                    .clearfix 
+
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách các văn bản đến được phân công
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content
+                                    table.table 
+                                        tr 
+                                            th STT 
+                                            th Số hiệu văn bản
+                                            th Tên văn bản
+                                            th Người xử lý
+                                            th Loại văn bản 
+                                            th Trạng thái
+                                        each value, index in list_document
+                                            tr
+                                                td= index + 1
+                                                td= value.id
+                                                td= value.incoming_document_name
+                                                if (value.employee_name)
+                                                    td= value.employee_name
+                                                else 
+                                                    td Chưa phân công
+                                                td= value.incoming_document_type
+                                                if (value.isComplete == true)
+                                                    td Đã xử lý
+                                                else 
+                                                    td Đang xử lý
+                                                td 
+                                                    button.btn.btn-info(data-toggle='modal', data-target='#infoDocumentModal', data-value=value) Chi tiết
+
+                    .row(style="margin-left: 10%")
+                        .col-md-10.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Biểu đồ
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content
+                                    input#datasets(type="text", value=datasets hidden)
+                                    input#labels(type="text", value=labels hidden)
+                                    input#datasets-pie(type="text", value=datasets_pie hidden)
+                                    input#labels-pie(type="text", value=labels_pie hidden)
+                                    //- canvas#barChart
+                                    canvas#doughnutChart
+
+                // footer content
+                footer
+                    .pull-right
+                        | Hệ thống quản lý văn bản
+                    .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')
+        script.
+            document.addEventListener('DOMContentLoaded', function (event) {
+                $("#infoDocumentModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_incoming_document = button.data('value');
+                    
+                    let inputIncomingDocumentId = document.getElementById('info-incoming-document-id');
+                    let inputIncomingDocumentType = document.getElementById('info-incoming-document-type');
+                    let inputIncomingDocumentName = document.getElementById('info-incoming-document-name');
+                    let inputIncomingDocumentDestination = document.getElementById('info-incoming-document-destination');
+                    let inputIncomingDocumentDate = document.getElementById('info-incoming-document-date');
+                    let inputIncomingDocumentContent = document.getElementById('info-incoming-document-content');
+
+                    inputIncomingDocumentId.setAttribute("value",value_incoming_document.id);
+                    inputIncomingDocumentType.setAttribute("value",value_incoming_document.incoming_document_type);
+                    inputIncomingDocumentName.value = value_incoming_document.incoming_document_name;
+                    inputIncomingDocumentDestination.setAttribute("value",value_incoming_document.incoming_document_destination);
+                    inputIncomingDocumentDate.setAttribute("value",value_incoming_document.incoming_document_date);
+                    inputIncomingDocumentContent.value = value_incoming_document.incoming_document_content;
+                });
+            });
+            let start_date = document.getElementById("start-date").getAttribute("value");
+            let startDate = [start_date.split("-")[2], start_date.split("-")[1], start_date.split("-")[0]].join("/");
+            let end_date = document.getElementById("end-date").getAttribute("value");
+            let endDate = [end_date.split("-")[2], end_date.split("-")[1], end_date.split("-")[0]].join("/");
+
+            //- let datasets = JSON.parse(document.getElementById("datasets").getAttribute("value"));
+            //- let labels = JSON.parse(document.getElementById("labels").getAttribute("value"));
+            //- let data = {
+            //-     labels: labels,
+            //-     datasets
+            //- };
+
+            //- const config = {
+            //-     type: 'bar',
+            //-     data,
+            //-     options: {
+            //-         title:{
+            //-             display:true,
+            //-             text:'Biểu đồ thống kế văn bản đến được phân công từ ngày ' + startDate + " đến " + endDate,
+            //-             fontSize:18
+            //-         },
+            //-         legend:{
+            //-             display:true,
+            //-             labels:{
+            //-                 fontColor:'rgb(38,185,154)'
+            //-             }
+            //-         },
+            //-         layout:{
+            //-             padding:{
+            //-                 left:50,
+            //-                 right:0,
+            //-                 bottom:0,
+            //-                 top:0
+            //-             }
+            //-         },
+            //-         tooltips:{
+            //-             enabled:true
+            //-         },
+            //-         scales: {
+            //-             xAxes: [{
+            //-                 barPercentage: 0.2
+            //-             }],
+            //-             yAxes: [
+            //-                 {
+            //-                     ticks: {
+            //-                         stepSize: 1,
+            //-                         beginAtZero: true
+            //-                     }
+            //-                 }
+            //-             ]
+            //-         }
+            //-     }
+            //- };
+
+            //- let barChart = new Chart(document.getElementById("barChart"), config);
+
+            let datasets_pie = JSON.parse(document.getElementById("datasets-pie").getAttribute("value"));
+            let labels_pie = JSON.parse(document.getElementById("labels-pie").getAttribute("value"));
+
+            let data_pie = {
+                labels: labels_pie,
+                datasets: datasets_pie
+            };
+            const config_doughnut = {
+                type: "doughnut",
+                data: data_pie,
+                options: {
+                    title:{
+                        display:true,
+                        text:'Biểu đồ thống kê theo loại văn bản đến được phân công từ ngày ' + startDate + " đến " + endDate,
+                        fontSize:18
+                    }
+                }
+            };
+
+            let doughnutChart = new Chart(document.getElementById("doughnutChart"), config_doughnut);

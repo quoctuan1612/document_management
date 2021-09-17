@@ -1,0 +1,360 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Quản lý thời hạn xử lý văn bản đến
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-md  
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...', width="32")
+                            .profile_info
+                                span Xin chào
+                                if user 
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến    
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)                
+                                            
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+
+                // page content
+                #updateDocumentProcessingTimeModal.modal.fade(tabindex='-1', aria-labelledby='updateDocumentProcessingTimeModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#updateDocumentProcessingTimeModalLabel.modal-title Sửa thông tin thời hạn xử lý văn bản
+                            .modal-body
+                                form#demo-form2-update.form-horizontal.form-label-left(data-parsley-validate='', method="POST")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Loại văn bản đến
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-document-type.form-control(type="text", name="documentType")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Nơi phát hành
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-destination.form-control(type="text", name="destination")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Số ngày xử lý văn bản đến
+                                        .col-md-6.col-sm-6
+                                            input#update-processing-time.form-control(type='number', name='processingTime', min="1", max="30")
+                                    .ln_solid
+                                    .item.form-group
+                                        .col-md-6.col-sm-6.offset-md-3
+                                            button.btn.btn-success(type='submit') Lưu
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                
+                #deleteDocumentProcessingTimeModal.modal.fade(tabindex='-1', aria-labelledby='deleteDocumentProcessingTimeModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#deleteDocumentProcessingTimeModalLabel.modal-title Xóa thông tin thời hạn xử lý văn bản đến
+                            .modal-body
+                                | Bạn có chắc chắn muốn xóa thông tin thời hạn xử lý văn bản đến này không?
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                                button#btn-delete-document-processing-time.btn.btn-danger(type='button') Xóa
+                
+
+                .right_col(role='main')
+                    .page-title
+                        .title_left
+                           h3 Quản lý thời hạn xử lý văn bản đến
+                        .title_right
+                            .col-md-5.col-sm-5.form-group.pull-right.top_search
+                                form(action="/documents-processing-time", method="GET", class="submit")
+                                    .input-group
+                                        input#search.form-control(type='text', name="query", placeholder='Tìm kiếm...', value=query)
+                                        span.input-group-btn
+                                            button.btn.btn-default(type='submit') Tìm
+                    
+                    .clearfix 
+
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách thời hạn xử lý văn bản đến
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content#list(style="display: none;")
+                                    table.table 
+                                        tr 
+                                            th STT 
+                                            th Loại văn bản đến
+                                            th Nơi phát hành
+                                            th Thời gian xử lý
+                                        if query
+                                            each value, index in documentProcessingTime
+                                                tr
+                                                    td= index + 1
+                                                    td= value.documentType
+                                                    td= value.destination
+                                                    td= value.processingTime
+                                                    td  
+                                                        button.btn.btn-warning(data-toggle='modal', data-target='#updateDocumentProcessingTimeModal', data-value=value) Sửa
+                                                    td 
+                                                        button.btn.btn-danger(data-toggle='modal', data-target='#deleteDocumentProcessingTimeModal', data-id=value.id) Xóa 
+                                        else 
+                                            each value, index in documentProcessingTime
+                                                tr
+                                                    td= index + 1
+                                                    td= value.documentType
+                                                    td= value.destination
+                                                    td= value.processingTime
+                                                    td  
+                                                        button.btn.btn-warning(data-toggle='modal', data-target='#updateDocumentProcessingTimeModal', data-value=value) Sửa
+                                                    td 
+                                                        button.btn.btn-danger(data-toggle='modal', data-target='#deleteDocumentProcessingTimeModal', data-id=value.id) Xóa
+                                            
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Thêm mới thời hạn xử lý văn bản đến
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none;")
+                                    br
+                                    form#demo-form2.form-horizontal.form-label-left(data-parsley-validate='', action="/documents-processing-time/new", method="POST")
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Loại văn bản đến
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                select(name="documentType", class="form-control", required="")
+                                                    option
+                                                    each value in type_documents
+                                                        option= value.name
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Nơi phát hành
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                select(name="destination", class="form-control", required="")
+                                                    option
+                                                    each value in destination_documents
+                                                        option= value.name
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Số ngày xử lý văn bản đến
+                                            .col-md-6.col-sm-6
+                                                input.form-control(type='number', name='processingTime', min="1", max="30", required="")
+                                        .ln_solid
+                                        .item.form-group
+                                            .col-md-6.col-sm-6.offset-md-3
+                                                button.btn.btn-primary(type='reset') Nhập lại
+                                                button.btn.btn-success(type='submit') Lưu
+                // page content
+                
+                // footer content
+                footer
+                    .pull-right
+                        | Hệ thống quản lý văn bản
+                    .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')
+        script. 
+            document.addEventListener('DOMContentLoaded', function (event) {
+                let id;
+                let btnDeleteDocumentProcessingTime = document.getElementById('btn-delete-document-processing-time');
+
+                $("#updateDocumentProcessingTimeModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value = button.data('value');
+                    let inputDocumentType = document.getElementById('update-document-type');
+                    let inputDestination = document.getElementById('update-destination');
+                    let formUpdate = document.getElementById('demo-form2-update');
+                    let action = "/documents-processing-time/" + value.id + "/update";
+
+                    inputDocumentType.setAttribute("value",value.documentType);
+                    inputDestination.setAttribute("value",value.destination);
+                    formUpdate.setAttribute("action",action);
+                });
+
+                $("#deleteDocumentProcessingTimeModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+                    id = button.data('id');
+                });
+
+                btnDeleteDocumentProcessingTime.onclick = function(){
+                    window.location = "/documents-processing-time/" + id + "/delete";
+                }
+
+                if ($("#search").val()){
+                    document.getElementById("list").setAttribute("style","display: block")
+                }
+            });

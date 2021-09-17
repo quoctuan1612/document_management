@@ -1,0 +1,511 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Quản lý nhân viên
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-md  
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...', width="32")
+                            .profile_info
+                                span Xin chào
+                                if user
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ        
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến           
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)         
+
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+
+                // page content
+                #updateEmployeeModal.modal.fade(tabindex='-1', aria-labelledby='updateEmployeeModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#updateEmployeeModalLabel.modal-title Sửa thông tin nhân viên
+                            .modal-body
+                                form#demo-form2-update.form-horizontal.form-label-left(data-parsley-validate='', method="POST")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Mã nhân viên
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-id.form-control(type='text' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Tên nhân viên
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-name.form-control(type='text', name='name', required='required')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Giới tính
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            select(name="gender", class="form-control")
+                                                option Nam 
+                                                option Nữ
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Năm sinh
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-dob.form-control(type='text', name='dob')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | SĐT
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-phone.form-control(type='text', name='phone')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Email
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-email.form-control(type='email', name='email', required="")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Chức vụ
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            select(name="position", class="form-control", required="")
+                                                option
+                                                each value in position
+                                                    option= value.name
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Phòng ban
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            select(name="department", class="form-control", required="")
+                                                option
+                                                each value in departments
+                                                    option= value.name
+                                    .ln_solid
+                                    .item.form-group
+                                        .col-md-6.col-sm-6.offset-md-3
+                                            button.btn.btn-success(type='submit') Lưu
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+
+                #deleteEmployeeModal.modal.fade(tabindex='-1', aria-labelledby='deleteEmployeeModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#deleteEmployeeModalLabel.modal-title Xóa thông tin nhân viên
+                            .modal-body
+                                | Bạn có chắc chắn muốn xóa thông tin nhân viên này không?
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                                button#btn-delete-employee.btn.btn-danger(type='button') Xóa
+                
+                #infoEmployeeModal.modal.fade(tabindex='-1', aria-labelledby='infoEmployeeModalLabel', role="dialog")
+                    .modal-dialog(role="document")
+                        .modal-content
+                            .modal-header
+                                h5#infoEmployeeModalLabel.modal-title Thông tin chi tiết nhân viên
+                            .modal-body
+                                form#demo-form2-info.form-horizontal.form-label-left(data-parsley-validate='')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Mã nhân viên
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-id.form-control(type='text', required='required', name='id' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Tên nhân viên
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-name.form-control(type='text', name='name', required='required' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Giới tính
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-gender.form-control(type='text', name='gender', required='required' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Năm sinh
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-dob.form-control(type='text', name='dob' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | SĐT
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-phone.form-control(type='text', name='phone' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Email
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-email.form-control(type='email', name='email' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Chức vụ
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-position.form-control(type='text', name='position', required='required' disabled)
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Phòng ban
+                                        .col-md-6.col-sm-6
+                                            input#info-employee-department.form-control(type='text', name='department', required='required' disabled)
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                
+                .right_col(role='main')
+                    .page-title
+                        .title_left
+                           h3 Quản lý nhân viên
+                        .title_right
+                            .col-md-5.col-sm-5.form-group.pull-right.top_search
+                                form(action="/employees", method="GET", class="submit")
+                                    .input-group
+                                        input.form-control(type='text', name="employee", placeholder='Tìm kiếm...', value=query)
+                                        span.input-group-btn
+                                            button.btn.btn-default(type='button') Tìm
+                    
+                    .clearfix 
+
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách nhân viên
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none;")
+                                    table.table 
+                                        tr 
+                                            th STT 
+                                            th Mã nhân viên
+                                            th Tên nhân viên
+                                            th Chức vụ
+                                            th Phòng ban
+                                        if query
+                                            each value, index in result
+                                                tr
+                                                    td= index + 1
+                                                    td= value.id
+                                                    td= value.name
+                                                    td= value.position
+                                                    td= value.department
+                                                    td 
+                                                        button.btn.btn-info(data-toggle='modal', data-target='#infoEmployeeModal', data-value=value) Chi tiết
+                                                    td  
+                                                        button.btn.btn-warning(data-toggle='modal', data-target='#updateEmployeeModal', data-value=value) Sửa
+                                                    td 
+                                                        button.btn.btn-danger(data-toggle='modal', data-target='#deleteEmployeeModal', data-id=value.id) Xóa 
+                                        else 
+                                            each value, index in employees
+                                                tr
+                                                    td= index + 1
+                                                    td= value.id
+                                                    td= value.name
+                                                    td= value.position
+                                                    td= value.department
+                                                    td 
+                                                        button.btn.btn-info(data-toggle='modal', data-target='#infoEmployeeModal', data-value=value) Chi tiết
+                                                    td  
+                                                        button.btn.btn-warning(data-toggle='modal', data-target='#updateEmployeeModal', data-value=value) Sửa
+                                                    td 
+                                                        button.btn.btn-danger(data-toggle='modal', data-target='#deleteEmployeeModal', data-id=value.id) Xóa
+                                            
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Thêm mới nhân viên
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none")
+                                    br
+                                    form#demo-form2.form-horizontal.form-label-left(data-parsley-validate='', action="/employees/new", method="POST")
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='employee-id')
+                                                | Mã nhân viên
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#employee-id.form-control(type='text', required='required', name='id')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='employee-name')
+                                                | Tên nhân viên
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#employee-name.form-control(type='text', name='name', required='required')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Giới tính
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                select(name="gender", class="form-control")
+                                                    option Nam 
+                                                    option Nữ
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='employee-dob')
+                                                | Năm sinh
+                                            .col-md-6.col-sm-6
+                                                input#employee-dob.form-control(type='text', name='dob')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='employee-phone')
+                                                | SĐT
+                                            .col-md-6.col-sm-6
+                                                input#employee-phone.form-control(type='text', name='phone')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align(for='employee-email')
+                                                | Email
+                                            .col-md-6.col-sm-6
+                                                input#employee-email.form-control(type='email', name='email')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Chức vụ
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                select(name="position", class="form-control")
+                                                    option
+                                                    each value in position
+                                                        option= value.name
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Phòng ban
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                select(name="department", class="form-control")
+                                                    option
+                                                    each value in departments
+                                                        option= value.name
+                                        .ln_solid
+                                        .item.form-group
+                                            .col-md-6.col-sm-6.offset-md-3
+                                                button.btn.btn-primary(type='reset') Nhập lại
+                                                button.btn.btn-success(type='submit') Lưu
+                // page content
+                
+                // footer content
+                footer
+                    .pull-right
+                        | Hệ thống quản lý văn bản
+                    .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')
+        script. 
+            document.addEventListener('DOMContentLoaded', function (event) {
+                let id;
+                let btnDeleteEmployee = document.getElementById('btn-delete-employee');
+
+                $("#infoEmployeeModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_employee = button.data('value');
+                    let inputEmployeeId = document.getElementById('info-employee-id');
+                    let inputEmployeeName = document.getElementById('info-employee-name');
+                    let inputEmployeeGender = document.getElementById('info-employee-gender');
+                    let inputEmployeeDob = document.getElementById('info-employee-dob');
+                    let inputEmployeePhone = document.getElementById('info-employee-phone');
+                    let inputEmployeeEmail = document.getElementById('info-employee-email');
+                    let inputEmployeePosition = document.getElementById('info-employee-position');
+                    let inputEmployeeDepartment = document.getElementById('info-employee-department');
+
+                    inputEmployeeId.setAttribute("value",value_employee.id);
+                    inputEmployeeName.setAttribute("value",value_employee.name);
+                    inputEmployeeGender.setAttribute("value",value_employee.gender);
+                    inputEmployeeDob.setAttribute("value",value_employee.dob);
+                    inputEmployeePhone.setAttribute("value",value_employee.phone);
+                    inputEmployeeEmail.setAttribute("value",value_employee.email);
+                    inputEmployeePosition.setAttribute("value",value_employee.position);
+                    inputEmployeeDepartment.setAttribute("value",value_employee.department);
+                });
+
+                $("#updateEmployeeModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_employee = button.data('value');
+                    let inputEmployeeId = document.getElementById('update-employee-id');
+                    let inputEmployeeName = document.getElementById('update-employee-name');
+                    let inputEmployeeDob = document.getElementById('update-employee-dob');
+                    let inputEmployeePhone = document.getElementById('update-employee-phone');
+                    let inputEmployeeEmail = document.getElementById('update-employee-email');
+
+                    let formUpdate = document.getElementById('demo-form2-update');
+                    let action = "/employees/" + value_employee.id + "/update";
+
+                    inputEmployeeId.setAttribute("value",value_employee.id);
+                    inputEmployeeName.setAttribute("value",value_employee.name);
+                    inputEmployeeDob.setAttribute("value",value_employee.dob);
+                    inputEmployeePhone.setAttribute("value",value_employee.phone);
+                    inputEmployeeEmail.setAttribute("value",value_employee.email);
+                    
+                    formUpdate.setAttribute("action",action);
+                });
+
+                $("#deleteEmployeeModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+                    id = button.data('id');
+                });
+
+                btnDeleteEmployee.onclick = function(){
+                    window.location = "/employees/" + id + "/delete";
+                }
+            });

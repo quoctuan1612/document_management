@@ -1,0 +1,409 @@
+html 
+    head 
+        meta(charset='UTF-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        title Quản lý người dùng
+        // Bootstrap
+        link(href='../vendors/bootstrap/dist/css/bootstrap.min.css', rel='stylesheet')
+        // Font Awesome
+        link(href='../vendors/font-awesome/css/font-awesome.min.css', rel='stylesheet')
+        // NProgress
+        link(href='../vendors/nprogress/nprogress.css', rel='stylesheet')
+        // bootstrap-daterangepicker
+        link(href='../vendors/bootstrap-daterangepicker/daterangepicker.css', rel='stylesheet')
+        // Custom Theme Style
+        link(href='../build/css/custom.min.css', rel='stylesheet')
+    body.nav-md
+        .container.body
+            .main_container
+                .col-md-3.left_col
+                    .left_col.scroll-view
+                        .navbar.nav_title(style='border: 0;')
+                            a.site_title(href='/')
+                                i.fa.fa-home
+                        .clearfix
+
+                        // menu profile quick info
+                        .profile.clearfix
+                            .profile_pic
+                                if user.avatar
+                                    img.img-circle.profile_img(src=user.avatar, alt='...')
+                            .profile_info
+                                span Xin chào
+                                if user
+                                    h2= user.employee_name
+                        // /menu profile quick info
+                        br
+                        // sidebar menu
+                        
+                        // sidebar menu
+                        #sidebar-menu.main_menu_side.hidden-print.main_menu
+                            .menu_section
+                                ul.nav.side-menu
+                                    if (user_permission.access_position !== "No" || user_permission.access_department !== "No" || user_permission.access_employee !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-edit
+                                                |  Quản lý 
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_position == "Yes")
+                                                    li
+                                                        a(href='position') Quản lý chức vụ
+                                                if (user_permission.access_department == "Yes")
+                                                    li
+                                                        a(href='departments') Quản lý phòng ban
+                                                if (user_permission.access_employee == "Yes")
+                                                    li
+                                                        a(href='employees') Quản lý nhân viên
+                                    if (user_permission.access_permission !== "No" || user_permission.access_user !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-user
+                                                |  Tài khoản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_permission == "Yes")
+                                                    li
+                                                        a(href='permission') Quản lý nhóm quyền
+                                                if (user_permission.access_user == "Yes")       
+                                                    li
+                                                        a(href='users') Quản lý người dùng
+                                    if (user_permission.access_type_document !== "No" || user_permission.access_destination_document !== "No" || user_permission.access_incoming_document !== "No" || user_permission.access_assignment_manager !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-file
+                                                |  Văn bản
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_type_document == "Yes")
+                                                    li
+                                                        a(href='documents-type') Quản lý loại văn bản
+                                                if (user_permission.access_destination_document == "Yes")
+                                                    li 
+                                                        a(href='documents-destination') Quản lý nơi đến
+                                                if (user_permission.access_incoming_document == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming') Quản lý văn bản đến
+                                                if (user_permission.access_document_processing_time == "Yes") 
+                                                    li 
+                                                        a(href='documents-processing-time') Quản lý thời hạn xử lý văn bản đến
+                                                if (user_permission.access_document_slow_progress == "Yes")    
+                                                    li 
+                                                        a(href='documents-slow-progress') Theo dõi văn bản chậm tiến độ        
+                                                if (user_permission.access_assignment_manager == "Yes")    
+                                                    li 
+                                                        a(href='documents-incoming-assignment') Xử lý văn bản đến
+                                    if (user_permission.access_assignment_leader !== "No" || user_permission.access_task !== "No")
+                                        li
+                                            a
+                                                i.fa.fa-tasks
+                                                |  Công việc
+                                                span.fa.fa-chevron-down
+                                            ul.nav.child_menu
+                                                if (user_permission.access_assignment_leader == "Yes")    
+                                                    li
+                                                        a(href='tasks-assignment-incoming-document') Xứ lý văn bản đến
+                                                if (user_permission.access_task == "Yes")
+                                                    li    
+                                                        a(href='tasks') Quản lý công việc     
+                                    li
+                                        a
+                                            i.fa.fa-tasks
+                                            |  Thống kê
+                                            span.fa.fa-chevron-down
+                                        ul.nav.child_menu    
+                                            li
+                                                a(href='statistics') Thống kê văn bản đến    
+                                            if (user_permission.access_assignment_leader == "Yes")
+                                                li
+                                                    a(href='statistics-leader') Thống kê văn bản đến (Trưởng bộ phận)
+                                            if (user_permission.access_statistics_manager == "Yes")
+                                                li
+                                                    a(href='statistics-manager') Thống kê văn bản đến (Lãnh đạo - HCTH)                       
+                    //sidebar menu
+
+                // top navigation
+                .top_nav
+                    .nav_menu
+                        .nav.toggle
+                            a#menu_toggle
+                                i.fa.fa-bars
+                        nav.nav.navbar-nav
+                            ul.navbar-right
+                                li.nav-item.dropdown.open(style='padding-left: 15px;')
+                                    a#navbarDropdown.user-profile.dropdown-toggle(href='javascript:;', aria-haspopup='true', data-toggle='dropdown', aria-expanded='false')
+                                        if user.avatar
+                                            img(src=user.avatar, alt='...')
+                                    .dropdown-menu.dropdown-usermenu.pull-right(aria-labelledby='navbarDropdown')
+                                        a.dropdown-item(href='login')
+                                            i.fa.fa-sign-out.pull-right
+                                            | Đăng xuất
+                // top navigation
+
+                // page content
+                #updateUserModal.modal.fade(tabindex='-1', aria-labelledby='updateUserModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#updateUserModalLabel.modal-title Sửa thông tin người dùng
+                            .modal-body
+                                form#demo-form2-update.form-horizontal.form-label-left(data-parsley-validate='', enctype="multipart/form-data", method="POST")
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Tên tài khoản
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-username.form-control(type='text', name='username', required='required')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Tên nhân viên
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-name.form-control(type='text', name='employee_name', required='required')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Email
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-email.form-control(type='text', name='employee_email', required='required')
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Nhóm quyền
+                                            span.required *
+                                        .col-md-6.col-sm-6
+                                            select(name="permission", class="form-control")
+                                                option
+                                                each value in permission
+                                                    option= value.name
+                                    .item.form-group
+                                        label.col-form-label.col-md-3.col-sm-3.label-align
+                                            | Ảnh đại diện
+                                        .col-md-6.col-sm-6
+                                            input#update-employee-avatar.form-control-file(type='file', name='avatar', accept=".docx")
+                                    .ln_solid
+                                    .item.form-group
+                                        .col-md-6.col-sm-6.offset-md-3
+                                            button.btn.btn-success(type='submit') Lưu
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                
+                #deleteUserModal.modal.fade(tabindex='-1', aria-labelledby='deleteUserModalLabel')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h5#deleteUserModalLabel.modal-title Xóa thông tin người dùng
+                            .modal-body
+                                | Bạn có chắc chắn muốn xóa thông tin người dùng này không?
+                            .modal-footer
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Thoát
+                                button#btn-delete-user.btn.btn-danger(type='button') Xóa
+                
+
+                .right_col(role='main')
+                    .page-title
+                        .title_left
+                           h3 Quản lý người dùng
+                        .title_right
+                            .col-md-5.col-sm-5.form-group.pull-right.top_search
+                                form(action="/users", method="GET", class="submit")
+                                    .input-group
+                                        input.form-control(type='text', name="user", placeholder='Tìm kiếm...', value=query)
+                                        span.input-group-btn
+                                            button.btn.btn-default(type='button') Tìm
+                    
+                    .clearfix 
+
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Danh sách người dùng
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none;")
+                                    table.table 
+                                        tr 
+                                            th STT 
+                                            th Tên tài khoản
+                                            th Tên nhân viên
+                                            th Email
+                                            th Nhóm quyền
+                                        if query
+                                            each value, index in result
+                                                tr
+                                                    td= index + 1
+                                                    td= value.username
+                                                    td= value.employee_name
+                                                    td= value.employee_email
+                                                    td= value.permission
+                                                    td  
+                                                        button.btn.btn-warning(data-toggle='modal', data-target='#updateUserModal', data-value=value) Sửa
+                                                    td 
+                                                        button.btn.btn-danger(data-toggle='modal', data-target='#deleteUserModal', data-id=value.username) Xóa
+                                        else 
+                                            each value, index in users
+                                                tr
+                                                    td= index + 1
+                                                    td= value.username
+                                                    td= value.employee_name
+                                                    td= value.employee_email
+                                                    td= value.permission
+                                                    td  
+                                                        button.btn.btn-warning(data-toggle='modal', data-target='#updateUserModal', data-value=value) Sửa
+                                                    td 
+                                                        button.btn.btn-danger(data-toggle='modal', data-target='#deleteUserModal', data-id=value.username) Xóa 
+                    .row
+                        .col-md-12.col-sm-12
+                            .x_panel
+                                .x_title
+                                    h2  Thêm mới người dùng
+                                    ul.nav.navbar-right.panel_toolbox
+                                        li
+                                            a.collapse-link
+                                                i.fa.fa-chevron-up
+                                        li
+                                            a.close-link
+                                                i.fa.fa-close
+                                    .clearfix
+                                .x_content(style="display: none;")
+                                    br
+                                    form#demo-form2.form-horizontal.form-label-left(data-parsley-validate='', enctype="multipart/form-data", action="/users/new", method="POST")
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Tên tài khoản
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#list-employee(type="text", value=employees, hidden="")
+                                                select(name="username", class="form-control", id="select-id")
+                                                    option
+                                                    each value in employees
+                                                        option
+                                                            p= value.id
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Tên nhân viên
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#employee-name.form-control(type='text', name='employee_name', required='required')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Email
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                input#employee-email.form-control(type='text', name='employee_email', required='required')
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Nhóm quyền
+                                                span.required *
+                                            .col-md-6.col-sm-6
+                                                select(name="permission", class="form-control")
+                                                    option
+                                                    each value in permission
+                                                        option= value.name
+                                        .item.form-group
+                                            label.col-form-label.col-md-3.col-sm-3.label-align
+                                                | Ảnh đại diện
+                                            .col-md-6.col-sm-6
+                                                input.form-control-file(type='file', name='avatar')
+                                        .ln_solid
+                                        .item.form-group
+                                            .col-md-6.col-sm-6.offset-md-3
+                                                button.btn.btn-primary(type='reset') Nhập lại
+                                                button.btn.btn-success(type='submit') Lưu
+                // page content
+                
+                // footer content
+                footer
+                    .pull-right
+                        | Hệ thống quản lý văn bản
+                    .clearfix
+        //- // jQuery
+        script(src='../vendors/jquery/dist/jquery.min.js')
+        // Bootstrap
+        script(src='../vendors/bootstrap/dist/js/bootstrap.bundle.min.js')
+        // FastClick
+        script(src='../vendors/fastclick/lib/fastclick.js')
+        // NProgress
+        script(src='../vendors/nprogress/nprogress.js')
+        // Chart.js
+        script(src='../vendors/Chart.js/dist/Chart.min.js')
+        // jQuery Sparklines
+        script(src='../vendors/jquery-sparkline/dist/jquery.sparkline.min.js')
+        // Flot
+        script(src='../vendors/Flot/jquery.flot.js')
+        script(src='../vendors/Flot/jquery.flot.pie.js')
+        script(src='../vendors/Flot/jquery.flot.time.js')
+        script(src='../vendors/Flot/jquery.flot.stack.js')
+        script(src='../vendors/Flot/jquery.flot.resize.js')
+        // Flot plugins
+        script(src='../vendors/flot.orderbars/js/jquery.flot.orderBars.js')
+        script(src='../vendors/flot-spline/js/jquery.flot.spline.min.js')
+        script(src='../vendors/flot.curvedlines/curvedLines.js')
+        // DateJS
+        script(src='../vendors/DateJS/build/date.js')
+        // bootstrap-daterangepicker
+        script(src='../vendors/moment/min/moment.min.js')
+        script(src='../vendors/bootstrap-daterangepicker/daterangepicker.js')
+        // Custom Theme Scripts
+        script(src='../build/js/custom.min.js')
+        script. 
+            document.addEventListener('DOMContentLoaded', function (event) {
+                let id;
+                let btnDeleteUser = document.getElementById('btn-delete-user');
+
+                $("#updateUserModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+
+                    let value_user = button.data('value');
+                    let inputUserName = document.getElementById('update-employee-username');
+                    let inputEmployeeName = document.getElementById('update-employee-name');
+                    let inputEmployeeEmail = document.getElementById('update-employee-email');
+                   
+                    let formUpdate = document.getElementById('demo-form2-update');
+                    let action = "/users/" + value_user.username + "/update";
+
+                    inputUserName.setAttribute("value",value_user.username);
+                    inputEmployeeName.setAttribute("value",value_user.employee_name);
+                    inputEmployeeEmail.setAttribute("value",value_user.employee_email);
+                    formUpdate.setAttribute("action",action);
+                });
+
+                $("#deleteUserModal").on('show.bs.modal', function (event) {
+                    $('#myInput').focus();
+                    var button = $(event.relatedTarget);
+                    id = button.data('id');
+                });
+
+                btnDeleteUser.onclick = function(){
+                    window.location = "/users/" + id + "/delete";
+                };
+            });
+
+            let employee_name = document.getElementById("employee-name");
+            let employee_email = document.getElementById("employee-email");
+            let list_employee = document.getElementById("list-employee");
+            let list = JSON.parse(list_employee.getAttribute("value"));
+    
+            $(document).ready(function() {
+                $('#select-id').change(function(){
+                    $("#select-id option:selected").each(function() {
+                        list.forEach((value) =>{
+                            if($(this).val() == value.id){
+                                employee_name.setAttribute("value", value.name);
+                                employee_email.setAttribute("value", value.email);
+                            }
+                        });
+                    });
+                });
+            });
+
+
